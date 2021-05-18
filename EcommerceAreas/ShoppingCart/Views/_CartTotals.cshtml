@@ -1,0 +1,21 @@
+﻿@model CartViewModel
+
+@{ var total = Model.SubTotal; }
+<div id="cart-totals">
+    <div class="cart-total-viewer">
+        <div class="label">
+            <span>@HtmlLocalizer["Total"]</span>
+        </div>
+        <div class="value">
+            <span>@Model.FormatPrice(total)</span>
+        </div>
+    </div>
+    @if (!Model.IsEmpty)
+    {
+    <div class="checkout-button-container">
+        <p>Review your shopping cart and checkout</p>
+
+        <input type="submit" value="Checkout" class="btn-primary checkout-button btn btn-default">
+    </div>
+    }
+</div>

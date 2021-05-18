@@ -1,0 +1,54 @@
+﻿@model CartViewModel
+
+@inject IEcommerceServiceOptions ecommerceOptions
+
+<div class="checkout-container container-fluid">
+    <div class="cart">
+        <div class="continue-shopping-link">
+            <a href="#" class="btn btn-default previous-url">&larr; @HtmlLocalizer["Continue shopping"]</a>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="invalid-cart-content"></div>
+        }
+
+        <h2>@HtmlLocalizer["Your shopping cart"]</h2>
+        <div class="row">
+            <div class="col-md-8 cart-content">
+                <hr class="first-separator" />
+                @if (Model.IsEmpty)
+                {
+                    <span>@HtmlLocalizer["Shopping cart is empty"]</span>
+                }
+                else
+                {
+
+                    @foreach (var cartItem in Model.CartItems)
+                    {
+                        <partial name="@EcommerceOptions.CartItemPartialView" model="@cartItem" />
+                    }
+                }
+
+                <hr class="last-separator" />
+
+                @if (Model.RemainingAmountForFreeShipping > 0)
+                {
+                    <partial name="@EcommerceOptions.CartTillFreeShippingPartialView" />
+                }
+            </div>
+            <div class="col-md-4">
+                <div class="cart-right-panel floating-box">
+                    <div id="couponCode"></div>
+                    <hr>
+
+                    <form action="@ecommerceOptions.CheckoutUrl()" method="post">
+
+                        <partial name="@EcommerceOptions.CartTotalsPartialView" />
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

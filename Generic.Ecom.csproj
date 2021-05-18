@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/hbscommerce</StaticWebAssetBasePath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Heartland Business Systems | jhess@hbs.net</Authors>
+    <Company>Heartland Business Systems</Company>
+    <PackageId>HBS.Kentico.Ecommerce</PackageId>
+    <Version>13.0.0</Version>
+    <Product>HBS.Kentico.Ecommerce</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kentico.Xperience.AspNetCore.WebApp" Version="13.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="CMS.AssemblyDiscoverableAttribute">
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\src\" />
+  </ItemGroup>
+
+</Project>
