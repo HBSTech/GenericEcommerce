@@ -1,0 +1,17 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "noEmitOnError": true,
+    "noImplicitAny": false,
+    "declaration": true,
+    "strict": true,
+    "lib": [ "es2015.promise", "es6", "dom" ],
+    "target": "es6",
+    "outDir": "wwwroot/js/src"
+  },
+  "include": [ "src/**/*" ],
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
+}

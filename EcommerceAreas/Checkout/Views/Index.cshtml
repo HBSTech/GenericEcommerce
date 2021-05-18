@@ -1,0 +1,207 @@
+﻿@model CheckoutViewModel
+
+<div class="row">
+    <div class="col-md-4 order-md-2 mb-4">
+
+        <div id="checkout-cart">
+            <partial name="@EcommerceOptions.CheckoutCartPartialView" model="@Model.ShoppingCart" />
+        </div>
+
+        <div class="card p-2">
+            <div class="input-group">
+                <input type="text" class="form-control coupon-code" placeholder="Coupon code">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-secondary redeem-coupon">Redeem</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3">Customer</h4>
+        <div class="customer needs-validation" @(Model.Customer == null? "" : "data-customerexists")>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="firstName">First name</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="" value="@Model.Customer?.FirstName" required="">
+                    <div class="invalid-feedback">
+                        Valid first name is required.
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="lastName">Last name</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="" value="@Model.Customer?.LastName" required="">
+                    <div class="invalid-feedback">
+                        Valid last name is required.
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="mb-3">
+                    <label for="username">Username</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"></span>
+                        </div>
+                        <input type="text" class="form-control" id="username" placeholder="Username" required="">
+                        <div class="invalid-feedback" style="width: 100%;">
+                            Your username is required.
+                        </div>
+                    </div>
+                </div>*@
+
+            <div class="mb-3">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" value="@Model.Customer?.Email" required="" placeholder="you@example.com">
+                <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                </div>
+            </div>
+        </div>
+        <div class="billing-address needs-validation">
+            <h4 class="mb-3">Billing Address</h4>
+            <div class="mb-3 billing-addresses">
+                <select class="custom-select d-block w-100 billing-address-select" data-default="@Model.BillingAddress?.AddressID" id="billingAddresses">
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="billingAddress">Address</label>
+                <input type="text" class="form-control" id="billingAddress" value="@Model.BillingAddress?.AddressLine1" placeholder="1234 Main St" required="">
+                <div class="invalid-feedback">
+                    Please enter your shipping address.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="billingAddress2">Address 2 <span class="text-muted">(Optional)</span></label>
+                <input type="text" class="form-control" id="billingAddress2" value="@Model.BillingAddress?.AddressLine2" placeholder="Apartment or suite">
+            </div>
+
+            <div class="mb-3">
+                <label for="billingCity">City</label>
+                <input type="text" class="form-control" id="billingCity" value="@Model.BillingAddress?.AddressCity" placeholder="Little Chute" required="">
+                <div class="invalid-feedback">
+                    Please enter your city.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-5 mb-3">
+                    <label for="billingCountry">Country</label>
+                    <select class="custom-select d-block w-100" id="billingCountry" data-default="@Model.BillingAddress?.AddressCountryID" required="">
+                        <option value="">Choose...</option>
+                        <option>United States</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a valid country.
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="billingState">State</label>
+                    <select class="custom-select d-block w-100" id="billingState" data-default="@Model.BillingAddress?.AddressStateID" required="">
+                        <option value="">Choose...</option>
+                        <option>California</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please provide a valid state.
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="billingZip">Zip</label>
+                    <input type="text" class="form-control" value="@Model.BillingAddress?.AddressPostalCode" id="billingZip" placeholder="" required="">
+                    <div class="invalid-feedback">
+                        Zip code required.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="mb-4">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="differentAddress">
+            <label class="custom-control-label" for="differentAddress">Shipping address is different than my billing address</label>
+        </div>
+        <div class="shipping-address needs-validation d-none">
+            <hr class="mb-4">
+            <h4 class="mb-3">Shipping Address</h4>
+            <div class="mb-3 shipping-addresses">
+                <select class="custom-select d-block w-100 shipping-address-select" data-default="@Model.ShippingAddress?.AddressID" id="shippingAddresses">
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="shippingAddress">Address</label>
+                <input type="text" class="form-control" id="shippingAddress" value="@Model.ShippingAddress?.AddressLine1" placeholder="1234 Main St" required="">
+                <div class="invalid-feedback">
+                    Please enter your shipping address.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="shippingAddress2">Address 2 <span class="text-muted">(Optional)</span></label>
+                <input type="text" class="form-control" id="shippingAddress2" value="@Model.ShippingAddress?.AddressLine2" placeholder="Apartment or suite">
+            </div>
+
+            <div class="mb-3">
+                <label for="shippingCity">City</label>
+                <input type="text" class="form-control" id="shippingCity" value="@Model.ShippingAddress?.AddressCity" placeholder="Little Chute" required="">
+                <div class="invalid-feedback">
+                    Please enter your city.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-5 mb-3">
+                    <label for="shippingCountry">Country</label>
+                    <select class="custom-select d-block w-100" id="shippingCountry" data-default="@Model.ShippingAddress?.AddressCountryID"  required="">
+                        <option value="">Choose...</option>
+                        <option>United States</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a valid country.
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="shippingState">State</label>
+                    <select class="custom-select d-block w-100" id="shippingState" data-default="@Model.ShippingAddress?.AddressStateID"  required="">
+                        <option value="">Choose...</option>
+                        <option>California</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please provide a valid state.
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="shippingZip">Zip</label>
+                    <input type="text" class="form-control" value="@Model.ShippingAddress?.AddressPostalCode" id="shippingZip" placeholder="" required="">
+                    <div class="invalid-feedback">
+                        Zip code required.
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="save-info">
+                <label class="custom-control-label" for="save-info">Save this information for next time</label>
+            </div>*@
+        <hr class="mb-4">
+
+        <div class="mb-3 shipping-option needs-validation">
+            <label for="shippingOption">Shipping Option</label>
+            <select class="custom-select d-block w-100" id="shippingOption" required="">
+                <option value="">Choose...</option>
+                <option>UPS Shipping</option>
+            </select>
+            <div class="invalid-feedback">
+                Please select a valid Shipping Option.
+            </div>
+        </div>
+
+        <hr class="mb-4">
+
+        <h4 class="mb-3">Payment</h4>
+
+        <div class="d-block my-3 needs-validation" id="paymentMethods">
+        </div>
+        <div id="paymentForm">
+
+        </div>
+    </div>
+</div>

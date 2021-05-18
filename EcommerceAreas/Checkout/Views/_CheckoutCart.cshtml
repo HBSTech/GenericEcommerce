@@ -1,0 +1,82 @@
+﻿@model CartViewModel
+<h4 class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted">Your cart</span>
+    <span class="badge badge-secondary badge-pill">@Model.CartItems.Count()</span>
+</h4>
+<ul class="list-group mb-3" id="checkout-items">
+    @foreach (var cartItem in Model.CartItems)
+    {
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+                <h6 class="my-0">@cartItem.SKUName</h6>
+                <small class="text-muted font-italic">
+                    @cartItem.SKUNumber
+                    @if (cartItem.CustomOptions.Count > 0)
+                    {
+                        foreach (var key in cartItem.CustomOptions.Keys)
+                        {
+                            <div>
+                                <span class="font-weight-bold">@key :</span> @cartItem.CustomOptions[key]
+                            </div>
+                        }
+                    }
+                </small>
+            </div>
+            <span class="text-muted">@cartItem.FormattedPrice</span>
+        </li>
+    }
+    @foreach (var discount in Model.AppliedItemDiscounts)
+    {
+    <li class="list-group-item d-flex justify-content-between bg-light align-items-center">
+        <div class="text-success mr-auto">
+            <h6 class="my-0 coupon">@discount.Key</h6>
+        </div>
+        <span class="text-success pr-2">-@Model.FormatPrice(discount.Value)</span>
+        @if (Model.CouponCodes.Contains(discount.Key, StringComparer.InvariantCultureIgnoreCase)) { 
+            <button type="submit" class="btn btn-sm btn-secondary remove-coupon">remove</button>
+        }
+    </li>
+    }
+    @if (Model.SubTotal != Model.GrandTotal)
+    {
+        <li class="list-group-item d-flex justify-content-between">
+            <span>Sub Total</span>
+            <strong>@Model.FormatPrice(Model.SubTotal)</strong>
+        </li>
+    }
+    @if (Model.TotalShipping > 0 || Model.IsShippingNeeded)
+    {
+        <li class="list-group-item d-flex justify-content-between">
+            <span @Html.Raw(Model.TotalShipping == 0 ? "class=\"text-success\"" : "")>Shipping</span>
+            <strong @Html.Raw(Model.TotalShipping == 0 ? "class=\"text-success\"" : "")>@Model.FormatPrice(Model.TotalShipping)</strong>
+        </li>
+        if (Model.RemainingAmountForFreeShipping > 0)
+        {
+            <li class="list-group-item d-flex justify-content-between">
+                <small class="font-italic">Amount Till Free Shipping</small>
+                <small><strong class="font-italic">@Model.FormatPrice(Model.RemainingAmountForFreeShipping)</strong></small>
+            </li>
+        }
+    }
+    @if (Model.TotalTax > 0)
+    {
+        <li class="list-group-item d-flex justify-content-between">
+            <span>Tax</span>
+            <strong>@Model.FormatPrice(Model.TotalTax)</strong>
+        </li>
+    }
+    @foreach (var discount in Model.AppliedOrderDiscounts)
+    {
+<li class="list-group-item d-flex justify-content-between bg-light align-items-center">
+    <div class="text-success mr-auto">
+        <h6 class="my-0 coupon">@discount.Key</h6>
+    </div>
+    <span class="text-success pr-2">-@Model.FormatPrice(discount.Value)</span>
+    <button type="submit" class="btn btn-sm btn-secondary remove-coupon">remove</button>
+</li>
+    }
+    <li class="list-group-item d-flex justify-content-between">
+        <span>Total (@CMS.Ecommerce.ECommerceContext.CurrentCurrency.CurrencyCode)</span>
+        <strong>@Model.FormatPrice(Model.GrandTotal)</strong>
+    </li>
+</ul>

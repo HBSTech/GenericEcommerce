@@ -1,0 +1,10 @@
+﻿@model AddToCartViewModel
+@{ 
+    List<string> customFieldString = new List<string>();
+    for(var i = 0; i < Model.CustomFields.Count; i++)
+    {
+        var item = Model.CustomFields.ElementAt(i);
+        customFieldString.Add($"data-custom-field-{item.Key.ToLowerInvariant()}=\"{item.Value}\"");
+    }
+}
+<a href="#" title="Add Product To Cart" data-sku="@Model.SKUGUID" data-quantity="@Model.Quantity" @Html.Raw(string.Join(" ", customFieldString)) class="btn btn-primary add-to-cart">Add To Cart</a> 

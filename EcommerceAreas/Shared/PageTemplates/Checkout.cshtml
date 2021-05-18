@@ -1,0 +1,7 @@
+﻿@{ ViewBag.Title = HtmlLocalizer["Checkout"].Value;
+    ViewData["PageClass"] = "inverted";
+    Layout = EcommerceOptions.EccommerceMasterPage; }
+
+@Html.AntiForgeryToken()
+
+<vc:checkout></vc:checkout>

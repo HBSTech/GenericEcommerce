@@ -1,0 +1,7 @@
+﻿@{ ViewBag.Title = HtmlLocalizer["Shopping Cart"].Value;
+    ViewData["PageClass"] = "inverted";
+    Layout = EcommerceOptions.EccommerceMasterPage; }
+
+@Html.AntiForgeryToken()
+
+<vc:shopping-cart></vc:shopping-cart>
