@@ -15,7 +15,7 @@
 
         public string CheckoutUrl { get; set; } = "/Checkout";
 
-        public string ThankYouUrl { get; set; } = "/THankYou";
+        public string ThankYouUrl { get; set; } = "/ThankYou";
 
     }
 }
