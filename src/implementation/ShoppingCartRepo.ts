@@ -10,49 +10,53 @@ export class ShoppingCartRepo {
     async updateTotals(): Promise<void> {
         var totalToFreeShipping = document.getElementById("free-shipping-promotion");
         var totals = document.getElementById("cart-totals");
-        var response = await EcommerceClassRepo.ajax("/ShoppingCart/GetTotals")
-        if (response.ok) {
-            var html = await response.text();
+        EcommerceClassRepo.ajax("/ShoppingCart/GetTotals").then((response) => {
+            return response.text();
+        }).then((html) => {
             var item = EcommerceClassRepo.decodeHTML(html) || "";
             totals?.replaceWith(item);
-        }
-        response = await EcommerceClassRepo.ajax("/ShoppingCart/GetTotalTillFreeShipping");
-        if (response.ok) {
-            var html = await response.text();
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
+        EcommerceClassRepo.ajax("/ShoppingCart/GetTotalTillFreeShipping").then((response) => {
+            return response.text();
+        }).then((html) => {
             var item = EcommerceClassRepo.decodeHTML(html) || "";
             totalToFreeShipping?.replaceWith(item);
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async updateItem(event: CustomEvent<{ [key: string]: any }>): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/ShoppingCart/Update", {
+        return EcommerceClassRepo.ajax("/ShoppingCart/Update", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(event.detail),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (!json.message && event.detail.priceEl != null) {
                 console.log(event.detail);
                 (event.detail.priceEl as HTMLSpanElement).innerHTML = json.price;
             } else {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-            this.updateTotals();
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async removeItem(event: CustomEvent): Promise<void> {
         var parent = event.detail.parent as HTMLElement;
         var id = (parent.querySelector("input[name=ID]") as HTMLInputElement | null)?.value ?? 0;
-        console.log(id);
-        var response = await EcommerceClassRepo.ajax("/ShoppingCart/RemoveItem", {
+        return EcommerceClassRepo.ajax("/ShoppingCart/RemoveItem", {
             method: "POST",
             body: id.toString(),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (!json.message) {
                 if (json.html) {
                     var cart = EcommerceClassRepo.closest(parent, ".cart-content");
@@ -63,8 +67,9 @@ export class ShoppingCartRepo {
             } else {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-            this.updateTotals();
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     returnShopping(): void {

@@ -56,78 +56,91 @@ export class CheckoutRepo {
     }
     getOrder() {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/GetOrder");
-            if (response.ok) {
-                return yield response.text();
-            }
-            else {
+            return EcommerceClassRepo.ajax("/Checkout/GetOrder").then((response) => {
+                return response.text();
+            }).then((html) => {
+                return html;
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
                 return null;
-            }
+            });
         });
     }
     getShippingOptions(selectId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/GetShippingOptions");
-            if (response.ok) {
-                var options = yield response.json();
+            return EcommerceClassRepo.ajax("/Checkout/GetShippingOptions").then((response) => {
+                return response.json();
+            }).then((options) => {
                 EcommerceClassRepo.applyDropdownList(selectId, options);
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     getPaymentOptions() {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/GetPaymentOptions");
-            if (response.ok) {
-                var options = yield response.json();
+            return EcommerceClassRepo.ajax("/Checkout/GetPaymentOptions")
+                .then((response) => {
+                return response.json();
+            })
+                .then((options) => {
                 return options;
-            }
-            else {
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
                 return null;
-            }
+            });
         });
     }
     getCountries(selectId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/GetCountries");
-            if (response.ok) {
-                var options = yield response.json();
+            return EcommerceClassRepo.ajax("/Checkout/GetCountries")
+                .then((response) => {
+                return response.json();
+            })
+                .then((options) => {
                 EcommerceClassRepo.applyDropdownList(selectId, options);
-            }
+            })
+                .catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     getStates(selectId, countryId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/GetStates", {
+            return EcommerceClassRepo.ajax("/Checkout/GetStates", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(countryId),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var options = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((options) => {
                 EcommerceClassRepo.applyDropdownList(selectId, options);
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     getPaymentForm() {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Payment/GetPaymentForm");
-            if (response.ok) {
-                return yield response.text();
-            }
-            else {
-                return '';
-            }
+            return EcommerceClassRepo.ajax("/Payment/GetPaymentForm").then((response) => {
+                return response.text();
+            }).then((html) => {
+                return html;
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                return null;
+            });
         });
     }
     createOrder() {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/CreatOrder", {
+            return EcommerceClassRepo.ajax("/Checkout/CreatOrder", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON({}),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var order = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((order) => {
                 if (!order.orderFailed) {
                     this.orderGUID = order.orderGUID;
                     document.body.dispatchEvent(this.paymentEvent);
@@ -135,23 +148,28 @@ export class CheckoutRepo {
                 else {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(order.message));
                 }
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     setCustomer(customer) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/SetCustomer", {
+            return EcommerceClassRepo.ajax("/Checkout/SetCustomer", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(customer),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var json = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
                 this.customerCreated = true;
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                this.customerCreated = false;
+            });
         });
     }
     setBillingAddress(address) {
@@ -160,17 +178,19 @@ export class CheckoutRepo {
                 setTimeout(() => { this.setBillingAddress(address); }, 500);
                 return;
             }
-            var response = yield EcommerceClassRepo.ajax("/Checkout/SetBillingAddress", {
+            return EcommerceClassRepo.ajax("/Checkout/SetBillingAddress", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(address),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var json = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     setShippingAddress(address) {
@@ -179,102 +199,115 @@ export class CheckoutRepo {
                 setTimeout(() => { this.setShippingAddress(address); }, 500);
                 return;
             }
-            var response = yield EcommerceClassRepo.ajax("/Checkout/SetShippingAddress", {
+            return EcommerceClassRepo.ajax("/Checkout/SetShippingAddress", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(address),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var json = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     setShippingOption(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/SetShippingOption", {
+            return EcommerceClassRepo.ajax("/Checkout/SetShippingOption", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON({ "optionID": id }),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var json = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     setPaymentOption(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/SetPaymentOption", {
+            return EcommerceClassRepo.ajax("/Checkout/SetPaymentOption", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON({ "optionID": id }),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var json = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     redeemCoupon(coupon) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/AddCoupon", {
+            return EcommerceClassRepo.ajax("/Checkout/AddCoupon", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(coupon),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var json = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     removeCoupon(coupon) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/RemoveCoupon", {
+            return EcommerceClassRepo.ajax("/Checkout/RemoveCoupon", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(coupon),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                var json = yield response.json();
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     getAddresses(shippingID, billingID) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/GetAddresses");
-            if (response.ok) {
-                var options = (yield response.json());
+            return EcommerceClassRepo.ajax("/Checkout/GetAddresses").then((response) => {
+                return response.json();
+            }).then((options) => {
                 EcommerceClassRepo.applyDropdownList(billingID, options);
                 EcommerceClassRepo.applyDropdownList(shippingID, options);
-            }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
         });
     }
     getAddress(addressID) {
         return __awaiter(this, void 0, void 0, function* () {
-            var response = yield EcommerceClassRepo.ajax("/Checkout/GetAddress", {
+            return EcommerceClassRepo.ajax("/Checkout/GetAddress", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(addressID),
                 headers: EcommerceClassRepo.getPostHeaders()
-            });
-            if (response.ok) {
-                return (yield response.json());
-            }
-            else {
+            }).then((response) => {
+                return response.json();
+            }).then((address) => {
+                return address;
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
                 return null;
-            }
+            });
         });
     }
 }

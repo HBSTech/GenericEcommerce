@@ -28,5 +28,10 @@ namespace Generic.Ecom
         {
             return Configuration.CheckoutUrl;
         }
+
+        public string ThankYouUrl()
+        {
+            return Configuration.ThankYouUrl;
+        }
     }
 }

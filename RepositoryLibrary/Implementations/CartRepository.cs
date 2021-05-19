@@ -12,11 +12,13 @@ namespace Generic.Ecom.RepositoryLibrary
     {
         public IShoppingService ShoppingService { get; }
         public IShoppingCartItemInfoProvider ShoppingCartItemInfoProvider { get; }
+        public IEcommerceServiceOptions EcommerceServiceOptions { get; }
 
-        public CartRepository(IShoppingService shoppingService, IShoppingCartItemInfoProvider shoppingCartItemInfoProvider)
+        public CartRepository(IShoppingService shoppingService, IShoppingCartItemInfoProvider shoppingCartItemInfoProvider, IEcommerceServiceOptions ecommerceServiceOptions)
         {
             ShoppingService = shoppingService;
             ShoppingCartItemInfoProvider = shoppingCartItemInfoProvider;
+            EcommerceServiceOptions = ecommerceServiceOptions;
         }
 
         public async Task<ShoppingCartItemInfo> GetItem(int itemID)
@@ -41,6 +43,7 @@ namespace Generic.Ecom.RepositoryLibrary
             var cart = GetCart(); 
 
             var model = new CartViewModel(cart);
+            model.ThankYouUrl = EcommerceServiceOptions.ThankYouUrl();
 
             if (includeDiscounts && !cart.IsEmpty)
             {

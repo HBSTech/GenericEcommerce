@@ -6,7 +6,6 @@ const ecommerceClass = InitializeEcommerceService("EcommerceClass");
 
 /* Event dispatch */
 document.body.addEventListener("click", function (ev) {
-    console.log(ev.target);
     if (ev.target.classList.contains("add-to-cart")) {
         ev.preventDefault();
         document.body.dispatchEvent(addToCart.addToCartEvent(ev.target));
@@ -33,7 +32,6 @@ document.body.addEventListener("click", function (ev) {
 
     if (ev.target.classList.contains("remove-coupon")) {
         ev.preventDefault();
-        console.log(ev.target.parentElement.querySelector(".coupon"))
         var code = ev.target.parentElement.querySelector(".coupon");
         if (code) {
             document.body.dispatchEvent(checkout.removeCouponEvent(code.innerText));
@@ -77,18 +75,19 @@ document.body.addEventListener("add-to-cart", function (ev) {
     addToCart.addItem(ev);
 });
 document.body.addEventListener("remove-cart-item", function (ev) {
-    shoppingCart.removeItem(ev);
-    document.body.dispatchEvent(shoppingCart.updateTotalsEvent);
+    shoppingCart.removeItem(ev).then(() => {
+        document.body.dispatchEvent(shoppingCart.updateTotalsEvent);
+    });
 });
 document.body.addEventListener("update-cart-item", function (ev) {
     if (ev.detail.Quantity != "0") {
-        shoppingCart.updateItem(ev);
-        document.body.dispatchEvent(shoppingCart.updateTotalsEvent);
+        shoppingCart.updateItem(ev).then(() => {
+            document.body.dispatchEvent(shoppingCart.updateTotalsEvent);
+        });
     } else {
         var parent = Array.prototype.slice.call(document.body.querySelectorAll(".cart-item")).filter((el) => {
             return el.querySelector("input[name=ID]")?.value == ev.detail.ID;
         });
-        console.log(parent);
         if (parent.length > 0) {
             document.body.dispatchEvent(shoppingCart.removeCartItemEvent(parent[0]));
         }
@@ -108,7 +107,6 @@ document.body.addEventListener("show-alert", function (ev) {
 //Checkout Events.
 document.body.addEventListener("get-address", function (ev) {
     checkout.getAddress(ev.detail.addressID).then((addressInfo) => {
-        console.log(ev);
         var mainID = "";
         if (ev.detail.addressType == 1) {
             mainID = "billing";
@@ -139,6 +137,11 @@ document.body.addEventListener("get-address", function (ev) {
         if (element) {
             element.value = addressInfo.addressPostalCode;
         }
+        var triggerAddress = document.body.querySelector("." + mainID + "-address");
+        if (triggerAddress) {
+            triggerAddress.dispatchEvent(new Event("change"));
+        }
+
     });
 });
 document.body.addEventListener("get-states", function (ev) {
@@ -149,7 +152,6 @@ document.body.addEventListener("get-states", function (ev) {
             stateEl.value = defaultID
         }
     });
-
 });
 document.body.addEventListener("set-customer", function (ev) {
     checkout.setCustomer(ev.detail);
@@ -172,19 +174,20 @@ document.body.addEventListener("set-shipping-option", function (ev) {
 });
 
 document.body.addEventListener("set-payment-option", function (ev) {
-    checkout.setPaymentOption(ev.detail);
-    var paymentForm = document.body.querySelector("#paymentForm");
-    if (paymentForm) {
-        checkout.getPaymentForm().then((form) => {
-            paymentForm.innerHTML = form;
-            var js = paymentForm.querySelectorAll("script[data-initialize]");
-            if (js) {
-                Array.prototype.slice.call(js).forEach((element) => {
-                    eval(element.innerText);
-                });
-            }
-        });
-    }
+    checkout.setPaymentOption(ev.detail).then(() => { 
+        var paymentForm = document.body.querySelector("#paymentForm");
+        if (paymentForm) {
+            checkout.getPaymentForm().then((form) => {
+                paymentForm.innerHTML = form;
+                var js = paymentForm.querySelectorAll("script[data-initialize]");
+                if (js) {
+                    Array.prototype.slice.call(js).forEach((element) => {
+                        eval(element.innerText);
+                    });
+                }
+            });
+        }
+    });
 });
 
 document.body.addEventListener("redeem-coupon", function (ev) {
@@ -241,8 +244,11 @@ document.body.addEventListener("update-order", function (ev) {
 });
 
 document.body.addEventListener("payment-result", function (ev) {
-    if (ev.detail.url) {
-        window.location = ev.detail.url;
+    if (ev.detail.paymentSuccessful) {
+        var url = document.body.querySelector("#checkout-cart");
+        if (url) {
+            window.location = url.dataset.thankyouurl;
+        }
     } else if (ev.detail.message) {
         document.body.dispatchEvent(ecommerceClass.showAlertEvent(ev.detail.message));
     }
@@ -423,5 +429,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         });
     }
 
-    document.body.dispatchEvent(checkout.getAddressesEvent);
+    var addresses = document.body.querySelectorAll("#billingAddresses, #shippingAddresses");
+    if (addresses.length > 0) {
+        document.body.dispatchEvent(checkout.getAddressesEvent);
+    }
 });

@@ -1,10 +1,11 @@
-﻿var DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack-plugin");
+﻿const DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
     entry: './src/index.ts',
     mode: "development",
     output: {
-        filename: '../wwwroot/js/ecommerce.js',
+        filename: '../wwwroot/js/ecommerce.min.js',
     },
     // Enable sourcemaps for debugging webpack's output. 
     devtool: "source-map",
@@ -23,7 +24,6 @@ module.exports = {
                     }
                 ]
             },
-
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'. 
             {
                 enforce: "pre",
@@ -35,6 +35,13 @@ module.exports = {
     plugins: [
         new DuplicatePackageCheckerPlugin({
             verbose: true,
-        })
-    ]
+        }),
+    ],
+    optimization: {
+        minimize: true, // Toggle me to minimize or not
+        minimizer: [
+            new TerserPlugin(),
+        ]
+    }
+
 };

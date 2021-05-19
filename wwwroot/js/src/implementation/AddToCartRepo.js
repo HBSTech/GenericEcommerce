@@ -12,15 +12,19 @@ import { EcommerceClassRepo } from "./EcommerceClassRepo";
 export class AddToCartRepo {
     addItem(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            let response = yield EcommerceClassRepo.ajax("/ShoppingCart/Add", {
+            return EcommerceClassRepo.ajax("/ShoppingCart/Add", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(event.detail),
                 headers: EcommerceClassRepo.getPostHeaders()
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
+                if (json.message) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
             });
-            if (response.ok) {
-                var result = yield response.json();
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(result.message));
-            }
         });
     }
     addToCartEvent(el) {

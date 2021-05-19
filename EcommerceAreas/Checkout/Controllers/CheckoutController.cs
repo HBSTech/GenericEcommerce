@@ -107,7 +107,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
                 return new JsonResult(new { Errors });
             }
 
-            CheckoutService.SetBillingAddress(model.AddressID, model);
+            _ = await CheckoutService.SetBillingAddress(model.AddressID, model);
 
             return new JsonResult(new { Message = localizer["Billing address saved."] });
         }
@@ -122,7 +122,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
                 return new JsonResult(new { Errors });
             }
 
-            CheckoutService.SetShippingAddress(model.AddressID, model);
+            _ = await CheckoutService.SetShippingAddress(model.AddressID, model);
 
             return new JsonResult(new { Message = localizer["Shipping address saved."] });
         }

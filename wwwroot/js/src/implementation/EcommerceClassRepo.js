@@ -49,12 +49,11 @@ export class EcommerceClassRepo {
         return __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
             var form = event.target;
-            var response = yield fetch(form.action, {
+            return this.ajax(form.action, {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(this.serializeForm(form)),
                 headers: this.getPostHeaders()
-            });
-            if (response.ok) {
+            }).then((response) => __awaiter(this, void 0, void 0, function* () {
                 var header = response.headers.get("content-type");
                 if (header !== null && header.indexOf("application/json") !== -1) {
                     var json = yield response.json();
@@ -73,7 +72,7 @@ export class EcommerceClassRepo {
                         form.remove();
                     }
                 }
-            }
+            }));
         });
     }
     static decodeHTML(encodedString) {

@@ -33,6 +33,8 @@ namespace Generic.Ecom.Models
 
         public IEnumerable<CartItemViewModel> CartItems { get; set; }
 
+        public string ThankYouUrl { get; set; } = "";
+
         public CartViewModel(ShoppingCartInfo cart)
         {
             ShoppingCart = cart;

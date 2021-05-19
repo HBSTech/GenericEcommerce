@@ -49,12 +49,11 @@ export class EcommerceClassRepo {
         event.preventDefault();
         var form = event.target as HTMLFormElement;
 
-        var response = await fetch(form.action, {
+        return this.ajax(form.action, {
             method: "POST",
             body: EcommerceClassRepo.getJSON(this.serializeForm(form)),
             headers: this.getPostHeaders()
-        });
-        if (response.ok) {
+        }).then(async (response) => {
             var header = response.headers.get("content-type");
             if (header !== null && header.indexOf("application/json") !== -1) {
                 var json = await response.json();
@@ -71,7 +70,7 @@ export class EcommerceClassRepo {
                     form.remove();
                 }
             }
-        }
+        })
     }
 
     static decodeHTML(encodedString: string): Node | undefined {

@@ -9,10 +9,10 @@ namespace Generic.Ecom.ServiceLibrary
     {
         bool AddCouponCode(string couponCode);
         Guid CreateOrder();
-        AddressInfo SetBillingAddress(int? addressID, AddressViewModel address);
+        Task<AddressInfo> SetBillingAddress(int? addressID, AddressViewModel address);
         Task<CustomerInfo> SetCustomer(CustomerViewModel customer, bool userAuthenticated);
         void SetPaymentOption(int paymentOptionID);
-        AddressInfo SetShippingAddress(int? addressID, AddressViewModel address);
+        Task<AddressInfo> SetShippingAddress(int? addressID, AddressViewModel address);
         void SetShippingOption(int shippingOptionID);
     }
 }

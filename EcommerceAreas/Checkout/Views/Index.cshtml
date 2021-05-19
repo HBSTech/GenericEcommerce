@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-md-4 order-md-2 mb-4">
 
-        <div id="checkout-cart">
+        <div id="checkout-cart" data-thankyouurl="@Model.ShoppingCart.ThankYouUrl">
             <partial name="@EcommerceOptions.CheckoutCartPartialView" model="@Model.ShoppingCart" />
         </div>
 

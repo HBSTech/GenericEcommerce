@@ -8,5 +8,6 @@ namespace Generic.Ecom
 
         int CacheMinutes();
         string CheckoutUrl();
+        string ThankYouUrl();
     }
 }

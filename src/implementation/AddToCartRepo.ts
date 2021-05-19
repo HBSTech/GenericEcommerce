@@ -6,15 +6,19 @@ import { AddToCartModel } from "./AddToCartModel";
 
 export class AddToCartRepo {
     async addItem(event: CustomEvent<{ [key: string]: any }>): Promise<void> {
-        let response = await EcommerceClassRepo.ajax("/ShoppingCart/Add", {
+        return EcommerceClassRepo.ajax("/ShoppingCart/Add", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(event.detail),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var result = await response.json();
-            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(result.message));
-        }
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
+            if (json.message) {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+            }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        })
     }
 
     addToCartEvent(el: HTMLElement): CustomEvent<{ [key: string]: AddToCartModel }> {

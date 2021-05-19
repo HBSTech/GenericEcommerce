@@ -31,17 +31,49 @@ namespace Generic.Ecom.ServiceLibrary
             CustomerInfoProvider = customerInfoProvider;
         }
 
-        public AddressInfo SetBillingAddress(int? addressID, AddressViewModel address)
+        public async Task<AddressInfo> SetBillingAddress(int? addressID, AddressViewModel address)
         {
-            AddressInfo addressInfo = addressID != null? AddressInfoProvider.Get(addressID ?? 0) : new AddressInfo();
+            AddressInfo addressInfo = null;
+
+            var customer = ShoppingService.GetCurrentCustomer();
+            if(customer != null && addressID == null)
+            {
+                addressInfo = (await AddressInfoProvider.GetByCustomer(customer.CustomerID)
+                    .WhereEquals(nameof(AddressInfo.AddressLine1), address.AddressLine1)
+                    .WhereEqualsOrNull(nameof(AddressInfo.AddressLine2), address.AddressLine2)
+                    .WhereEquals(nameof(AddressInfo.AddressCity), address.AddressCity)
+                    .WhereEquals(nameof(AddressInfo.AddressStateID), address.AddressStateID)
+                    .WhereEquals(nameof(AddressInfo.AddressCountryID), address.AddressCountryID)
+                    .WhereEquals(nameof(AddressInfo.AddressZip), address.AddressPostalCode)
+                    .GetEnumerableTypedResultAsync())
+                    .FirstOrDefault();
+            }
+
+            addressInfo = addressInfo != null? addressInfo : addressID != null ? AddressInfoProvider.Get(addressID ?? 0) : AddressInfo.New();
             address.ApplyTo(addressInfo);
             ShoppingService.SetBillingAddress(addressInfo);
             return addressInfo;
         }
 
-        public AddressInfo SetShippingAddress(int? addressID, AddressViewModel address)
+        public async Task<AddressInfo> SetShippingAddress(int? addressID, AddressViewModel address)
         {
-            AddressInfo addressInfo = addressID != null ? AddressInfoProvider.Get(addressID ?? 0) : new AddressInfo();
+            AddressInfo addressInfo = null;
+
+            var customer = ShoppingService.GetCurrentCustomer();
+            if (customer != null && addressID == null)
+            {
+                addressInfo = (await AddressInfoProvider.GetByCustomer(customer.CustomerID)
+                    .WhereEquals(nameof(AddressInfo.AddressLine1), address.AddressLine1)
+                    .WhereEqualsOrNull(nameof(AddressInfo.AddressLine2), address.AddressLine2)
+                    .WhereEquals(nameof(AddressInfo.AddressCity), address.AddressCity)
+                    .WhereEquals(nameof(AddressInfo.AddressStateID), address.AddressStateID)
+                    .WhereEquals(nameof(AddressInfo.AddressCountryID), address.AddressCountryID)
+                    .WhereEquals(nameof(AddressInfo.AddressZip), address.AddressPostalCode)
+                    .GetEnumerableTypedResultAsync())
+                    .FirstOrDefault();
+            }
+
+            addressInfo = addressInfo != null ? addressInfo : addressID != null ? AddressInfoProvider.Get(addressID ?? 0) : new AddressInfo();
             address.ApplyTo(addressInfo);
             ShoppingService.SetShippingAddress(addressInfo);
             return addressInfo;

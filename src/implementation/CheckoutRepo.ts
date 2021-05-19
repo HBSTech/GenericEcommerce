@@ -80,90 +80,112 @@ export class CheckoutRepo {
     }
 
     async getOrder(): Promise<string> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/GetOrder");
-        if (response.ok) {
-            return await response.text();
-        } else {
+        return EcommerceClassRepo.ajax("/Checkout/GetOrder").then((response) => {
+            return response.text();
+        }).then((html) => {
+            return html;
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
             return null as any;
-        }
+        });
     }
 
     async getShippingOptions(selectId: string): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/GetShippingOptions");
-        if (response.ok) {
-            var options = await response.json() as ListItem[];
+        return EcommerceClassRepo.ajax("/Checkout/GetShippingOptions").then((response) => {
+            return response.json();
+        }).then((options) => {
             EcommerceClassRepo.applyDropdownList(selectId, options);
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async getPaymentOptions(): Promise<ListItem[]> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/GetPaymentOptions");
-        if (response.ok) {
-            var options = await response.json() as ListItem[];
-            return options;
-
-        }
-        else { return null as any; }
+        return EcommerceClassRepo.ajax("/Checkout/GetPaymentOptions")
+            .then((response) => {
+                return response.json();
+            })
+            .then((options) => {
+                return options as ListItem[];
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                return null as any;
+            });
     }
 
     async getCountries(selectId: string): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/GetCountries");
-        if (response.ok) {
-            var options = await response.json() as ListItem[];
-            EcommerceClassRepo.applyDropdownList(selectId, options);
-        }
+        return EcommerceClassRepo.ajax("/Checkout/GetCountries")
+            .then((response) => {
+                return response.json();
+            })
+            .then((options) => {
+                EcommerceClassRepo.applyDropdownList(selectId, options);
+            })
+            .catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            });
     }
 
     async getStates(selectId: string, countryId: Number): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/GetStates", {
+        return EcommerceClassRepo.ajax("/Checkout/GetStates", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(countryId),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var options = await response.json() as ListItem[];
+        }).then((response) => {
+            return response.json();
+        }).then((options) => {
             EcommerceClassRepo.applyDropdownList(selectId, options);
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async getPaymentForm(): Promise<string> {
-        var response = await EcommerceClassRepo.ajax("/Payment/GetPaymentForm");
-        if (response.ok) {
-            return await response.text();
-        }
-        else { return ''; }
+        return EcommerceClassRepo.ajax("/Payment/GetPaymentForm").then((response) => {
+            return response.text();
+        }).then((html) => {
+            return html;
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            return null as any;
+        });
     }
 
     async createOrder(): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/CreatOrder", {
+        return EcommerceClassRepo.ajax("/Checkout/CreatOrder", {
             method: "POST",
             body: EcommerceClassRepo.getJSON({}),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var order = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((order) => {
             if (!order.orderFailed) {
                 this.orderGUID = order.orderGUID;
                 document.body.dispatchEvent(this.paymentEvent);
             } else {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(order.message));
             }
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async setCustomer(customer: Customer): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/SetCustomer", {
+        return EcommerceClassRepo.ajax("/Checkout/SetCustomer", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(customer),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
             this.customerCreated = true;
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+            this.customerCreated = false;
+        });
     }
 
     async setBillingAddress(address: Address): Promise<void> {
@@ -171,17 +193,19 @@ export class CheckoutRepo {
             setTimeout(() => { this.setBillingAddress(address) }, 500);
             return;
         }
-        var response = await EcommerceClassRepo.ajax("/Checkout/SetBillingAddress", {
+        return EcommerceClassRepo.ajax("/Checkout/SetBillingAddress", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(address),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async setShippingAddress(address: Address): Promise<void> {
@@ -189,94 +213,108 @@ export class CheckoutRepo {
             setTimeout(() => { this.setShippingAddress(address) }, 500);
             return;
         }
-        var response = await EcommerceClassRepo.ajax("/Checkout/SetShippingAddress", {
+        return EcommerceClassRepo.ajax("/Checkout/SetShippingAddress", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(address),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async setShippingOption(id: number): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/SetShippingOption", {
+        return EcommerceClassRepo.ajax("/Checkout/SetShippingOption", {
             method: "POST",
             body: EcommerceClassRepo.getJSON({ "optionID": id }),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async setPaymentOption(id: number): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/SetPaymentOption", {
+        return EcommerceClassRepo.ajax("/Checkout/SetPaymentOption", {
             method: "POST",
             body: EcommerceClassRepo.getJSON({ "optionID": id }),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async redeemCoupon(coupon: string): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/AddCoupon", {
+        return EcommerceClassRepo.ajax("/Checkout/AddCoupon", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(coupon),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async removeCoupon(coupon: string): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/RemoveCoupon", {
+        return EcommerceClassRepo.ajax("/Checkout/RemoveCoupon", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(coupon),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            var json = await response.json();
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async getAddresses(shippingID: string, billingID: string): Promise<void> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/GetAddresses");
-        if (response.ok) {
-            var options = (await response.json()) as ListItem[];
+        return EcommerceClassRepo.ajax("/Checkout/GetAddresses").then((response) => {
+            return response.json();
+        }).then((options) => {
             EcommerceClassRepo.applyDropdownList(billingID, options);
             EcommerceClassRepo.applyDropdownList(shippingID, options);
-        }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+        });
     }
 
     async getAddress(addressID): Promise<Address> {
-        var response = await EcommerceClassRepo.ajax("/Checkout/GetAddress", {
+        return EcommerceClassRepo.ajax("/Checkout/GetAddress", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(addressID),
             headers: EcommerceClassRepo.getPostHeaders()
-        });
-        if (response.ok) {
-            return (await response.json());
-        } else {
+        }).then((response) => {
+            return response.json();
+        }).then((address) => {
+            return address;
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
             return null as any;
-        }
+        });
     }
 }
