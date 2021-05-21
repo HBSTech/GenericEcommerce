@@ -310,4 +310,7 @@ export class CheckoutRepo {
             });
         });
     }
+    redirectToThankYouUrl(url) {
+        window.location.href = url; // + (this.orderGUID ? (url.includes("?") ? "&" : "?") + "orderGUID=" + this.orderGUID : "");
+    }
 }

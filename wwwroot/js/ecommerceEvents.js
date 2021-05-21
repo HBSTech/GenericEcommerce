@@ -247,7 +247,7 @@ document.body.addEventListener("payment-result", function (ev) {
     if (ev.detail.paymentSuccessful) {
         var url = document.body.querySelector("#checkout-cart");
         if (url) {
-            window.location = url.dataset.thankyouurl;
+            checkout.redirectToThankYouUrl(url.dataset.thankyouurl);
         }
     } else if (ev.detail.message) {
         document.body.dispatchEvent(ecommerceClass.showAlertEvent(ev.detail.message));

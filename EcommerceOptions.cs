@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -35,7 +36,9 @@ namespace Generic.Ecom
 
         public static string EccommerceMasterPage = "~/Views/Shared/_layout.cshtml";
 
-        private const string CONSTRAINT_FOR_NON_ROUTER_PAGE_CONTROLLERS = "Checkout";
+        private const string CONSTRAINT_FOR_CHECKOUT_PAGE_CONTROLLERS = "Checkout";
+
+        private const string CONSTRAINT_FOR_SHOPPING_CART_PAGE_CONTROLLERS = "ShoppingCart";
 
         private const string DEFAULT_WITHOUT_LANGUAGE_PREFIX_ROUTE_NAME = "DefaultEcommerceWithoutLanguagePrefix";
 
@@ -43,12 +46,21 @@ namespace Generic.Ecom
         {
             endpoints.MapControllerRoute(
                name: "ecommerce_areas",
-               pattern: $"{{area:exists}}/{{culture}}/{{controller}}/{{action}}"
+               pattern: $"{{area:exists}}/{{culture}}/{{controller}}/{{action}}",
+               constraints: new
+               {
+                   culture = new SiteCultureConstraint { HideLanguagePrefixForDefaultCulture = true },
+                   controller = new RegexRouteConstraint($"^({CONSTRAINT_FOR_CHECKOUT_PAGE_CONTROLLERS}|{CONSTRAINT_FOR_SHOPPING_CART_PAGE_CONTROLLERS})+$")
+               }
             );
 
             endpoints.MapControllerRoute(
                 name: DEFAULT_WITHOUT_LANGUAGE_PREFIX_ROUTE_NAME + "_areas",
-                pattern: "{area:exists}/{controller}/{action}"
+                pattern: "{area:exists}/{controller}/{action}",
+                constraints: new
+                {
+                    controller = new RegexRouteConstraint($"^({CONSTRAINT_FOR_CHECKOUT_PAGE_CONTROLLERS}|{CONSTRAINT_FOR_SHOPPING_CART_PAGE_CONTROLLERS})+$")
+                }
             );
 
             return endpoints;

@@ -40,4 +40,5 @@ export declare class CheckoutRepo {
     removeCoupon(coupon: string): Promise<void>;
     getAddresses(shippingID: string, billingID: string): Promise<void>;
     getAddress(addressID: any): Promise<Address>;
+    redirectToThankYouUrl(url: string): void;
 }

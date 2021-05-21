@@ -317,4 +317,8 @@ export class CheckoutRepo {
             return null as any;
         });
     }
+
+    redirectToThankYouUrl(url: string): void {
+        window.location.href = url; // + (this.orderGUID ? (url.includes("?") ? "&" : "?") + "orderGUID=" + this.orderGUID : "");
+    }
 }
