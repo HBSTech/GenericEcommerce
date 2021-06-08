@@ -8,8 +8,16 @@
     <Authors>Heartland Business Systems | jhess@hbs.net</Authors>
     <Company>Heartland Business Systems</Company>
     <PackageId>HBS.Kentico.Ecommerce</PackageId>
-    <Version>13.0.0</Version>
+    <Version>13.0.1</Version>
     <Product>HBS.Kentico.Ecommerce</Product>
+    <PackageProjectUrl>https://github.com/HBSTech/GenericEcommerce</PackageProjectUrl>
+    <AssemblyVersion>13.0.1.0</AssemblyVersion>
+    <FileVersion>13.0.1.0</FileVersion>
+    <RepositoryUrl>https://github.com/HBSTech/GenericEcommerce</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageIcon>hbs-icon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>Ecommerce,Kentico,xperience,hbs,heartland,business,systems</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +35,17 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\js\src\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Generic.StripePaymentGateway\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="hbs-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
