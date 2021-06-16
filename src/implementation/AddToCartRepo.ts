@@ -5,6 +5,10 @@ import { AddToCartModel } from "./AddToCartModel";
 
 
 export class AddToCartRepo {
+    addedToCart: Event;
+    constructor() {
+        this.addedToCart = new Event("added-to-cart");
+    }
     async addItem(event: CustomEvent<{ [key: string]: any }>): Promise<void> {
         return EcommerceClassRepo.ajax("/ShoppingCart/Add", {
             method: "POST",
@@ -16,6 +20,7 @@ export class AddToCartRepo {
             if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
+            document.body.dispatchEvent(this.addedToCart);
         }).catch((error) => {
             document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
         })

@@ -10,6 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { EcommerceClassRepo } from "./EcommerceClassRepo";
 export class AddToCartRepo {
+    constructor() {
+        this.addedToCart = new Event("added-to-cart");
+    }
     addItem(event) {
         return __awaiter(this, void 0, void 0, function* () {
             return EcommerceClassRepo.ajax("/ShoppingCart/Add", {
@@ -22,6 +25,7 @@ export class AddToCartRepo {
                 if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
+                document.body.dispatchEvent(this.addedToCart);
             }).catch((error) => {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
             });

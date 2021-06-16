@@ -19,8 +19,9 @@ namespace Generic.Ecom.ServiceLibrary
         public ICountryInfoProvider CountryInfoProvider { get; }
         public IStateInfoProvider StateInfoProvider { get; }
         public ICustomerInfoProvider CustomerInfoProvider { get; }
+        public IShoppingCartInfoProvider ShoppingCartInfoProvider { get; }
 
-        public CheckoutService(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICartRepository cartRepository, ISKUInfoProvider sKUInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, ICustomerInfoProvider customerInfoProvider)
+        public CheckoutService(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICartRepository cartRepository, ISKUInfoProvider sKUInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, ICustomerInfoProvider customerInfoProvider, IShoppingCartInfoProvider shoppingCartInfoProvider)
         {
             ShoppingService = shoppingService;
             AddressInfoProvider = addressInfoProvider;
@@ -29,6 +30,7 @@ namespace Generic.Ecom.ServiceLibrary
             CountryInfoProvider = countryInfoProvider;
             StateInfoProvider = stateInfoProvider;
             CustomerInfoProvider = customerInfoProvider;
+            ShoppingCartInfoProvider = shoppingCartInfoProvider;
         }
 
         public async Task<AddressInfo> SetBillingAddress(int? addressID, AddressViewModel address)
@@ -145,6 +147,13 @@ namespace Generic.Ecom.ServiceLibrary
             {
                 return Guid.Empty;
             }
+        }
+
+        public void SetOrderNote(string note)
+        {
+            var cart = CartRepository.GetCart();
+            cart.ShoppingCartNote = note;
+            ShoppingCartInfoProvider.Set(cart);
         }
     }
 }

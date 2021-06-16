@@ -30,6 +30,10 @@ export class CheckoutRepo {
         this.getAddressesEvent = new Event("get-addresses");
     }
 
+    setOrderNoteEvent(note: string): CustomEvent<string> {
+        return new CustomEvent("set-order-note", { detail: note });
+    }
+
     redeemCouponEvent(coupon: string): CustomEvent<string> {
         return new CustomEvent("redeem-coupon", { detail: coupon });
     }
@@ -303,7 +307,7 @@ export class CheckoutRepo {
         });
     }
 
-    async getAddress(addressID): Promise<Address> {
+    async getAddress(addressID: number): Promise<Address> {
         return EcommerceClassRepo.ajax("/Checkout/GetAddress", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(addressID),
@@ -315,6 +319,22 @@ export class CheckoutRepo {
         }).catch((error) => {
             document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
             return null as any;
+        });
+    }
+
+    async setOrderNote(note: string): Promise<void> {
+        EcommerceClassRepo.ajax("/Checkout/SetOrderNote", {
+            method: "POST",
+            body: EcommerceClassRepo.getJSON(note),
+            headers: EcommerceClassRepo.getPostHeaders()
+        }).then((response) => {
+            return response.json();
+        }).then((j) => {
+            if (j.message) {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(j.message));
+            }
+        }).catch((m) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(m.message));
         });
     }
 

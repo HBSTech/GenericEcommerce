@@ -8,6 +8,7 @@ namespace Generic.Ecom.RepositoryLibrary
     public interface ICartRepository
     {
         bool CartIsEmpty();
+        int CartQuantity();
         ShoppingCartInfo GetCart();
         CartViewModel GetCartViewModel(bool includeDiscounts);
         string GetCurrencyString();

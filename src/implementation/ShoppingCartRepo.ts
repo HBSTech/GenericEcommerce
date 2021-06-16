@@ -48,25 +48,17 @@ export class ShoppingCartRepo {
     }
 
     async removeItem(event: CustomEvent): Promise<void> {
-        var parent = event.detail.parent as HTMLElement;
-        var id = (parent.querySelector("input[name=ID]") as HTMLInputElement | null)?.value ?? 0;
         return EcommerceClassRepo.ajax("/ShoppingCart/RemoveItem", {
             method: "POST",
-            body: id.toString(),
+            body: event.detail.ID.toString(),
             headers: EcommerceClassRepo.getPostHeaders()
         }).then((response) => {
             return response.json();
         }).then((json) => {
-            if (!json.message) {
-                if (json.html) {
-                    var cart = EcommerceClassRepo.closest(parent, ".cart-content");
-                    var newNode = EcommerceClassRepo.decodeHTML(json.html) || document.createElement("span");
-                    cart.insertBefore(newNode, parent);
-                }
-                parent.remove();
-            } else {
+            if (json.message) {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
             }
+            return json.html;
         }).catch((error) => {
             document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
         });
@@ -82,10 +74,10 @@ export class ShoppingCartRepo {
         });
     }
 
-    removeCartItemEvent(parent: HTMLElement): CustomEvent<{ [key: string]: any }> {
+    removeCartItemEvent(ID: number): CustomEvent<{ [key: string]: any }> {
         return new CustomEvent("remove-cart-item", {
             detail: {
-                "parent": parent
+                "ID": ID
             }
         });
     }

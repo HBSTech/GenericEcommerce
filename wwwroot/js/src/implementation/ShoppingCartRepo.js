@@ -57,28 +57,18 @@ export class ShoppingCartRepo {
         });
     }
     removeItem(event) {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            var parent = event.detail.parent;
-            var id = (_b = (_a = parent.querySelector("input[name=ID]")) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : 0;
             return EcommerceClassRepo.ajax("/ShoppingCart/RemoveItem", {
                 method: "POST",
-                body: id.toString(),
+                body: event.detail.ID.toString(),
                 headers: EcommerceClassRepo.getPostHeaders()
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (!json.message) {
-                    if (json.html) {
-                        var cart = EcommerceClassRepo.closest(parent, ".cart-content");
-                        var newNode = EcommerceClassRepo.decodeHTML(json.html) || document.createElement("span");
-                        cart.insertBefore(newNode, parent);
-                    }
-                    parent.remove();
-                }
-                else {
+                if (json.message) {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
                 }
+                return json.html;
             }).catch((error) => {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
             });
@@ -92,10 +82,10 @@ export class ShoppingCartRepo {
             detail: cartItem
         });
     }
-    removeCartItemEvent(parent) {
+    removeCartItemEvent(ID) {
         return new CustomEvent("remove-cart-item", {
             detail: {
-                "parent": parent
+                "ID": ID
             }
         });
     }

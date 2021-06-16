@@ -3,16 +3,28 @@
     <div class="col-md-10">
         <input type="hidden" name="ID" value="@Model.CartItemID" />
         <input type="hidden" name="SKUID" value="@Model.SKUID" />
-        @if (!string.IsNullOrEmpty(Model.SKUImagePath))
-        {
-            <div class="cart-item-image">
-                <a href="@Url.Action("FindProduct", new { skuId = Model.SKUID })">
+        <div class="cart-item-image">
+            @if (!string.IsNullOrEmpty(Model.SKUImagePath))
+            {
+                <a href="@Url.Action("FindProduct", "ShoppingCart", new { skuId = Model.SKUID })">
                     <img src="@Model.SKUImagePath" alt="@Model.SKUName" title="@Model.SKUName" />
                 </a>
-            </div>
-        }
+            }
+        </div>
         <div class="cart-item-info">
-            @Html.ActionLink(Model.SKUName, "FindProduct", new { skuId = Model.SKUID })
+            @Html.ActionLink(Model.SKUName, "FindProduct", "ShoppingCart", new { skuId = Model.SKUID })
+            <small class="text-muted font-italic">
+                @Model.SKUNumber
+                @Html.Raw(!string.IsNullOrEmpty(Model.SKUNumber) ? "<br/>" : "")
+                @if (Model.CustomOptions.Count > 0)
+                {
+                    foreach (var key in Model.CustomOptions.Keys)
+                    {
+                        <strong>@key :</strong> @Model.CustomOptions[key]
+                        <br />
+                    }
+                }
+            </small>
         </div>
 
         <div class="cart-item-amount">

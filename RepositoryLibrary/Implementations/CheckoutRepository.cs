@@ -21,10 +21,11 @@ namespace Generic.Ecom.RepositoryLibrary
         public IPaymentOptionInfoProvider PaymentOptionInfoProvider { get; }
         public ICartRepository CartRepository { get; }
         public IEcommerceServiceOptions EcommerceServiceOptions { get; }
+        public IProgressiveCache ProgressiveCache { get; }
         public IShoppingService ShoppingService { get; }
         public IAddressInfoProvider AddressInfoProvider { get; }
 
-        public CheckoutRepository(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, IShippingOptionInfoProvider shippingOptionInfoProvider, IPaymentOptionInfoProvider paymentOptionInfoProvider, ICartRepository cartRepository, IEcommerceServiceOptions ecommerceServiceOptions)
+        public CheckoutRepository(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, IShippingOptionInfoProvider shippingOptionInfoProvider, IPaymentOptionInfoProvider paymentOptionInfoProvider, ICartRepository cartRepository, IEcommerceServiceOptions ecommerceServiceOptions, IProgressiveCache progressiveCache)
         {
             CountryInfoProvider = countryInfoProvider;
             StateInfoProvider = stateInfoProvider;
@@ -32,6 +33,7 @@ namespace Generic.Ecom.RepositoryLibrary
             PaymentOptionInfoProvider = paymentOptionInfoProvider;
             CartRepository = cartRepository;
             EcommerceServiceOptions = ecommerceServiceOptions;
+            ProgressiveCache = progressiveCache;
             ShoppingService = shoppingService;
             AddressInfoProvider = addressInfoProvider;
         }
@@ -44,20 +46,30 @@ namespace Generic.Ecom.RepositoryLibrary
 
         public async Task<IEnumerable<SelectListItem>> GetCountries()
         {
-            var countries = await CacheHelper.Cache(async () =>
+            var countries = await ProgressiveCache.LoadAsync(async (cs) =>
             {
-                return await CountryInfoProvider.Get().GetEnumerableTypedResultAsync();
+                var options = await CountryInfoProvider.Get().GetEnumerableTypedResultAsync();
+                if (cs.Cached)
+                {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency(options.Select(x => $"{CountryInfo.OBJECT_TYPE}|byid|{x.CountryID}").ToArray());
+                }
+                return options;
             }, new CacheSettings(EcommerceServiceOptions.CacheMinutes(), nameof(GetCountries)));
 
             return countries.OrderByDescending(x => x.CountryDisplayName == "USA").Select(x => new SelectListItem(x.CountryDisplayName, x.CountryID.ToString()));
         }
         public async Task<IEnumerable<SelectListItem>> GetStates(int countryID)
         {
-            var states = await CacheHelper.Cache(async () =>
+            var states = await ProgressiveCache.LoadAsync(async (cs) =>
             {
-                return await StateInfoProvider.Get()
+                var options = await StateInfoProvider.Get()
                 .WhereEquals(nameof(StateInfo.CountryID), countryID)
                 .GetEnumerableTypedResultAsync();
+                if (cs.Cached)
+                {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency(options.Select(x => $"{StateInfo.OBJECT_TYPE}|byid|{x.StateID}").ToArray());
+                }
+                return options;
             }, new CacheSettings(EcommerceServiceOptions.CacheMinutes(), nameof(GetStates), countryID));
 
             return states.Select(x => new SelectListItem(x.StateDisplayName, x.StateID.ToString()));
@@ -68,11 +80,16 @@ namespace Generic.Ecom.RepositoryLibrary
             var customer = ShoppingService.GetCurrentCustomer();
             if (customer != null)
             {
-                var addresses = await CacheHelper.Cache(async (cs) =>
+                var addresses = await ProgressiveCache.LoadAsync(async (cs) =>
                 {
-                    return await AddressInfoProvider.Get()
+                    var options = await AddressInfoProvider.Get()
                     .WhereEquals(nameof(AddressInfo.AddressCustomerID), customer.CustomerID)
                     .GetEnumerableTypedResultAsync();
+                    if (cs.Cached)
+                    {
+                        cs.CacheDependency = CacheHelper.GetCacheDependency(options.Select(x => $"{AddressInfo.OBJECT_TYPE}|byid|{x.AddressID}").ToArray());
+                    }
+                    return options;
                 }, new CacheSettings(EcommerceServiceOptions.CacheMinutes(), nameof(GetAddresses), customer.CustomerID));
                 var addressList = addresses.Select(x => new SelectListItem(x.AddressName, x.AddressID.ToString())).ToList();
                 if (addressList.Count > 0)
@@ -90,9 +107,14 @@ namespace Generic.Ecom.RepositoryLibrary
         public async Task<IEnumerable<SelectListItem>> GetShippingOptions()
         {
             var current = ShoppingService.GetShippingOption();
-            var options = await CacheHelper.Cache(async () =>
+            var options = await ProgressiveCache.LoadAsync(async (cs) =>
             {
-                return await ShippingOptionInfoProvider.GetBySite(SiteContext.CurrentSiteID, true).GetEnumerableTypedResultAsync();
+                var options = await ShippingOptionInfoProvider.GetBySite(SiteContext.CurrentSiteID, true).GetEnumerableTypedResultAsync();
+                if (cs.Cached)
+                {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency(options.Select(x => $"{ShippingOptionInfo.OBJECT_TYPE}|byid|{x.ShippingOptionID}").ToArray());
+                }
+                return options;
             }, new CacheSettings(EcommerceServiceOptions.CacheMinutes(), nameof(GetShippingOptions), SiteContext.CurrentSiteID));
 
             return options.Select(x => new SelectListItem(x.ShippingOptionDisplayName, x.ShippingOptionID.ToString(), x.ShippingOptionID == current));
@@ -102,9 +124,14 @@ namespace Generic.Ecom.RepositoryLibrary
         {
             var cart = CartRepository.GetCart();
             var current = cart.ShoppingCartPaymentOptionID;
-            var options = await CacheHelper.Cache(async () =>
+            var options = await ProgressiveCache.LoadAsync(async (cs) =>
             {
-                return await PaymentOptionInfoProvider.GetBySite(SiteContext.CurrentSiteID, true).GetEnumerableTypedResultAsync();
+                var options = await PaymentOptionInfoProvider.GetBySite(SiteContext.CurrentSiteID, true).GetEnumerableTypedResultAsync();
+                if (cs.Cached)
+                {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency(options.Select(x=>$"{PaymentOptionInfo.OBJECT_TYPE}|byid|{x.PaymentOptionID}").ToArray());
+                }
+                return options;
             }, new CacheSettings(EcommerceServiceOptions.CacheMinutes(), nameof(GetPaymentOptions), SiteContext.CurrentSiteID));
 
             var applicable = options.Where(x => CMS.Ecommerce.PaymentOptionInfoProvider.IsPaymentOptionApplicable(cart, x));

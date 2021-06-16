@@ -65,6 +65,9 @@ document.body.addEventListener("change", function (ev) {
     if (ev.target.classList.contains("shipping-address-select")) {
         document.body.dispatchEvent(checkout.getAddressEvent(ev.target.value, 2));
     }
+    if (ev.target.classList.contains("order-note")) {
+        document.body.dispatchEvent(checkout.setOrderNoteEvent(ev.target.value));
+    }
 });
 
 /* Consume Events */
@@ -75,7 +78,18 @@ document.body.addEventListener("add-to-cart", function (ev) {
     addToCart.addItem(ev);
 });
 document.body.addEventListener("remove-cart-item", function (ev) {
-    shoppingCart.removeItem(ev).then(() => {
+    shoppingCart.removeItem(ev).then((html) => {
+        var parent = Array.prototype.slice.call(document.body.querySelectorAll(".cart-item")).filter((el) => {
+            return el.querySelector("input[name=ID]")?.value == ev.detail.ID;
+        });
+        if (parent.length > 0) {
+            if (html) {
+                var cart = EcommerceClassRepo.closest(parent, ".cart-content");
+                var newNode = EcommerceClassRepo.decodeHTML(json.html) || document.createElement("span");
+                cart.insertBefore(newNode, parent);
+            }
+            parent[0].remove();
+        }
         document.body.dispatchEvent(shoppingCart.updateTotalsEvent);
     });
 });
@@ -85,12 +99,7 @@ document.body.addEventListener("update-cart-item", function (ev) {
             document.body.dispatchEvent(shoppingCart.updateTotalsEvent);
         });
     } else {
-        var parent = Array.prototype.slice.call(document.body.querySelectorAll(".cart-item")).filter((el) => {
-            return el.querySelector("input[name=ID]")?.value == ev.detail.ID;
-        });
-        if (parent.length > 0) {
-            document.body.dispatchEvent(shoppingCart.removeCartItemEvent(parent[0]));
-        }
+        document.body.dispatchEvent(shoppingCart.removeCartItemEvent(ev.detail.ID));
     }
 });
 document.body.addEventListener("return-shopping", function (ev) {
@@ -200,10 +209,15 @@ document.body.addEventListener("redeem-coupon", function (ev) {
     });
 });
 
+
 document.body.addEventListener("remove-coupon", function (ev) {
     checkout.removeCoupon(ev.detail).then(() => {
         document.body.dispatchEvent(checkout.updateOrderEvent);
     });
+});
+
+document.body.addEventListener("set-order-note", function (ev) {
+    checkout.setOrderNote(ev.detail);
 });
 
 document.body.addEventListener("create-order", function (ev) {

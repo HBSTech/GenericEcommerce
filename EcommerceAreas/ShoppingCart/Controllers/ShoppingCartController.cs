@@ -100,5 +100,12 @@ namespace Generic.Ecom.Controllers
 
             return View(EcommerceOptions.CartTillFreeShippingPartialView, cart);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetQuantity()
+        {
+            return Content(CartRepository.CartQuantity().ToString());
+        }
     }
 }

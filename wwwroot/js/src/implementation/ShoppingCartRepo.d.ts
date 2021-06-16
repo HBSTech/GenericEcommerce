@@ -13,7 +13,7 @@ export declare class ShoppingCartRepo {
     }): CustomEvent<{
         [key: string]: any;
     }>;
-    removeCartItemEvent(parent: HTMLElement): CustomEvent<{
+    removeCartItemEvent(ID: number): CustomEvent<{
         [key: string]: any;
     }>;
 }

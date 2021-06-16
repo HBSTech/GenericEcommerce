@@ -10,6 +10,7 @@ export declare class CheckoutRepo {
     getAddressesEvent: Event;
     customerCreated: boolean;
     constructor();
+    setOrderNoteEvent(note: string): CustomEvent<string>;
     redeemCouponEvent(coupon: string): CustomEvent<string>;
     removeCouponEvent(coupon: string): CustomEvent<string>;
     getStatesEvent(selectId: string, countryId: Number): CustomEvent<{
@@ -39,6 +40,7 @@ export declare class CheckoutRepo {
     redeemCoupon(coupon: string): Promise<void>;
     removeCoupon(coupon: string): Promise<void>;
     getAddresses(shippingID: string, billingID: string): Promise<void>;
-    getAddress(addressID: any): Promise<Address>;
+    getAddress(addressID: number): Promise<Address>;
+    setOrderNote(note: string): Promise<void>;
     redirectToThankYouUrl(url: string): void;
 }

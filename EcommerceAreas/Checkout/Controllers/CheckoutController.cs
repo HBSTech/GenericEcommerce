@@ -195,5 +195,13 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
                 return new JsonResult(new { Message = "Create Order Failed", OrderFailed = true });
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetOrderNote([FromBody] string note)
+        {
+            CheckoutService.SetOrderNote(note);
+            return Json("");
+        }
     }
 }

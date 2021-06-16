@@ -25,6 +25,8 @@ namespace Generic.Ecom.Models
 
         public bool IsShippingNeeded { get; set; }
 
+        public string Note { get; set; }
+
         public ShoppingCartInfo ShoppingCart { get; }
 
         public Dictionary<string, decimal> AppliedItemDiscounts { get; set; }
@@ -51,6 +53,8 @@ namespace Generic.Ecom.Models
             AppliedOrderDiscounts = new Dictionary<string, decimal>();
 
             CouponCodes = cart.CouponCodes.AllAppliedCodes.Select(x=>x.Code);
+
+            Note = cart.ShoppingCartNote;
 
             CartItems = cart.CartItems.Select((cartItemInfo) =>
             {

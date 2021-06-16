@@ -58,6 +58,11 @@ namespace Generic.Ecom.RepositoryLibrary
             return GetCart().IsEmpty;
         }
 
+        public int CartQuantity()
+        {
+            return GetCart().TotalUnits;
+        }
+
         public void ApplyItemDiscounts(CartViewModel model, bool includeDiscounts)
         {
             var cart = model.ShoppingCart;

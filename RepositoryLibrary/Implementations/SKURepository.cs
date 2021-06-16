@@ -16,17 +16,19 @@ namespace Generic.Ecom.RepositoryLibrary
         public IPageRetriever PageRetriever { get; }
         public ISKUInfoProvider SKUInfoProvider { get; }
         public IEcommerceServiceOptions EcommerceServiceOptions { get; }
+        public IProgressiveCache ProgressiveCache { get; }
 
-        public SKURepository(IPageRetriever pageRetriever, ISKUInfoProvider sKUInfoProvider, IEcommerceServiceOptions ecommerceServiceOptions)
+        public SKURepository(IPageRetriever pageRetriever, ISKUInfoProvider sKUInfoProvider, IEcommerceServiceOptions ecommerceServiceOptions, IProgressiveCache progressiveCache)
         {
             PageRetriever = pageRetriever;
             SKUInfoProvider = sKUInfoProvider;
             EcommerceServiceOptions = ecommerceServiceOptions;
+            ProgressiveCache = progressiveCache;
         }
 
         public async Task<string> GetProductAlias(int skuid, ContainerCustomData containerCustomData)
         {
-            var result = await CacheHelper.CacheAsync(async () =>
+            var result = await ProgressiveCache.LoadAsync(async (cs) =>
             {
                 var treeNode = await PageRetriever.RetrieveAsync<TreeNode>(x =>
                 x.Where(nameof(TreeNode.NodeSKUID), QueryOperator.Equals, skuid));

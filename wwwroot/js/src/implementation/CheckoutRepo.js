@@ -19,6 +19,9 @@ export class CheckoutRepo {
         this.customerCreated = document.body.querySelector(".customer[data-customerexists]") != null;
         this.getAddressesEvent = new Event("get-addresses");
     }
+    setOrderNoteEvent(note) {
+        return new CustomEvent("set-order-note", { detail: note });
+    }
     redeemCouponEvent(coupon) {
         return new CustomEvent("redeem-coupon", { detail: coupon });
     }
@@ -307,6 +310,23 @@ export class CheckoutRepo {
             }).catch((error) => {
                 document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
                 return null;
+            });
+        });
+    }
+    setOrderNote(note) {
+        return __awaiter(this, void 0, void 0, function* () {
+            EcommerceClassRepo.ajax("/Checkout/SetOrderNote", {
+                method: "POST",
+                body: EcommerceClassRepo.getJSON(note),
+                headers: EcommerceClassRepo.getPostHeaders()
+            }).then((response) => {
+                return response.json();
+            }).then((j) => {
+                if (j.message) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(j.message));
+                }
+            }).catch((m) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(m.message));
             });
         });
     }

@@ -1,8 +1,10 @@
 ﻿@model CartViewModel
 <section id="free-shipping-promotion">
-    <div>
-        <span class="free-shipping-string">
-            @HtmlLocalizer["Spend {0} more and get free delivery today!", Model.FormatPrice(Model.RemainingAmountForFreeShipping)]
-        </span>
-    </div>
+    @if (!Model.IsEmpty && Model.IsShippingNeeded) {
+        <div>
+            <span class="free-shipping-string">
+                @HtmlLocalizer["Spend {0} more for free shipping!", Model.FormatPrice(Model.RemainingAmountForFreeShipping)]
+            </span>
+        </div>
+    }
 </section>

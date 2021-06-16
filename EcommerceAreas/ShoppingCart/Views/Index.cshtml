@@ -2,7 +2,7 @@
 
 @inject IEcommerceServiceOptions ecommerceOptions
 
-<div class="checkout-container container-fluid">
+<div class="shoppingcart-container container-fluid">
     <div class="cart">
         <div class="continue-shopping-link">
             <a href="#" class="btn btn-default previous-url">&larr; @HtmlLocalizer["Continue shopping"]</a>
@@ -39,9 +39,7 @@
             </div>
             <div class="col-md-4">
                 <div class="cart-right-panel floating-box">
-                    <div id="couponCode"></div>
-                    <hr>
-
+                    <hr class="first-separator">
                     <form action="@ecommerceOptions.CheckoutUrl()" method="post">
 
                         <partial name="@EcommerceOptions.CartTotalsPartialView" />

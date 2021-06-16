@@ -16,31 +16,32 @@ namespace Generic.Ecom.ServiceLibrary
         public ICartRepository CartRepository { get; }
         public ISKUInfoProvider SKUInfoProvider { get; }
         public IShoppingCartItemInfoProvider ShoppingCartItemInfoProvider { get; }
+        public IProgressiveCache ProgressiveCache { get; }
 
-        public CartService(IShoppingService shoppingService, ICartRepository cartRepository, ISKUInfoProvider sKUInfoProvider, IShoppingCartItemInfoProvider shoppingCartItemInfoProvider)
+        public CartService(IShoppingService shoppingService, ICartRepository cartRepository, ISKUInfoProvider sKUInfoProvider, IShoppingCartItemInfoProvider shoppingCartItemInfoProvider, IProgressiveCache progressiveCache)
         {
             ShoppingService = shoppingService;
             CartRepository = cartRepository;
             SKUInfoProvider = sKUInfoProvider;
             ShoppingCartItemInfoProvider = shoppingCartItemInfoProvider;
+            ProgressiveCache = progressiveCache;
         }
 
         public async Task<ShoppingCartItemInfo> AddToCart(AddToCartViewModel cartViewModel)
         {
 
-            CacheSettings settings = new CacheSettings(30, "AddToCart", cartViewModel.SKUGUID);
-            var sku = await CacheHelper.CacheAsync(c =>
+            var sku = await ProgressiveCache.LoadAsync(async (cs) =>
             {
-                var item = SKUInfoProvider.GetAsync(cartViewModel.SKUGUID);
+                var item = await SKUInfoProvider.GetAsync(cartViewModel.SKUGUID);
                 return item;
-            }, settings);
+            }, new CacheSettings(30, "AddToCart", cartViewModel.SKUGUID));
 
             var shoppingCartItem = new ShoppingCartItemParameters(sku.SKUID, cartViewModel.Quantity);
             if (cartViewModel.CustomFields != null)
             {
                 foreach(KeyValuePair<string, object> item in cartViewModel.CustomFields)
                 {
-                    shoppingCartItem.CustomParameters.Add(item.Key, item.Value);
+                    shoppingCartItem.CustomParameters.Add(item.Key.Replace("customField", "").ToLowerInvariant(), item.Value);
                 }
             }
 
