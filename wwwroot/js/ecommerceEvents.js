@@ -13,8 +13,8 @@ document.body.addEventListener("click", function (ev) {
 
     if (ev.target.parentElement.classList.contains("cart-item-remove-btn") || ev.target.classList.contains("cart-item-remove-btn")) {
         ev.preventDefault();
-        var parent = ecommerceClass.closest(event.target, ".cart-item");
-        document.body.dispatchEvent(shoppingCart.removeCartItemEvent(parent));
+        var parent = event.target.closest(".cart-item");
+        document.body.dispatchEvent(shoppingCart.removeCartItemEvent(parent.querySelector("[name='ID']")?.value));
     }
 
     if (ev.target.classList.contains("previous-url")) {
@@ -41,7 +41,7 @@ document.body.addEventListener("click", function (ev) {
 
 document.body.addEventListener("change", function (ev) {
     if (ev.target.classList.contains("cart-item-units")) {
-        var parent = ecommerceClass.closest(event.target, ".cart-item");
+        var parent = event.target.closest(".cart-item");
         var idSelector = parent.querySelector("input[name=ID]");
         var skuidSelector = parent.querySelector("input[name=SKUID]");
         var quantitySelector = parent.querySelector("input[name=Units]");
@@ -79,16 +79,17 @@ document.body.addEventListener("add-to-cart", function (ev) {
 });
 document.body.addEventListener("remove-cart-item", function (ev) {
     shoppingCart.removeItem(ev).then((html) => {
-        var parent = Array.prototype.slice.call(document.body.querySelectorAll(".cart-item")).filter((el) => {
-            return el.querySelector("input[name=ID]")?.value == ev.detail.ID;
-        });
-        if (parent.length > 0) {
-            if (html) {
-                var cart = EcommerceClassRepo.closest(parent, ".cart-content");
-                var newNode = EcommerceClassRepo.decodeHTML(json.html) || document.createElement("span");
-                cart.insertBefore(newNode, parent);
+        var item = document.body.querySelector(".cart-item input[name=ID][value='" + ev.detail.ID + "']")
+        if (item) {
+            var parent = item.closest(".cart-item");
+            if (parent) {
+                if (html) {
+                    var cart = parent.closest(".cart-content");
+                    var newNode = ecommerceClass.decodeHTML(html) || document.createElement("span");
+                    cart.insertBefore(newNode, parent);
+                }
+                parent.remove();
             }
-            parent[0].remove();
         }
         document.body.dispatchEvent(shoppingCart.updateTotalsEvent);
     });
