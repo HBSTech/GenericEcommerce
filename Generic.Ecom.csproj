@@ -8,17 +8,23 @@
     <Authors>Heartland Business Systems | jhess@hbs.net</Authors>
     <Company>Heartland Business Systems</Company>
     <PackageId>HBS.Kentico.Ecommerce</PackageId>
-    <Version>13.5.1</Version>
+    <Version>13.5.2</Version>
     <Product>HBS.Kentico.Ecommerce</Product>
     <PackageProjectUrl>https://github.com/HBSTech/GenericEcommerce</PackageProjectUrl>
-    <AssemblyVersion>13.5.1</AssemblyVersion>
-    <FileVersion>13.5.1</FileVersion>
+    <AssemblyVersion>13.5.2</AssemblyVersion>
+    <FileVersion>13.5.2</FileVersion>
     <RepositoryUrl>https://github.com/HBSTech/GenericEcommerce</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
     <PackageIcon>hbs-icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>Ecommerce,Kentico,xperience,hbs,heartland,business,systems</PackageTags>
-    <PackageReleaseNotes>13.5.1:
+    <PackageReleaseNotes>13.5.2:
+Switched the Remove Cart Item to using an ID vs grabbing the ID from a div.  
+Added an order Note
+Added a added-to-cart event in order to detect after an item has been added.  Useful for mini-cart updates(mini cart not included)
+Updated Caching 
+Updated unit counts and added a controller to get cart quantity. (for displaying in other sections of the site)
+13.5.1:
 Downgraded to kentico libraries 13.0.5,
 Removed tsconfig.json and packages.json from nupkg</PackageReleaseNotes>
   </PropertyGroup>
