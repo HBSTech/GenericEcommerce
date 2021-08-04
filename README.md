@@ -1,6 +1,8 @@
 # GenericEcommerce
 Add Ecommerce to your Kentico Xperience MVC.Net Core Application.  ready to use out of box, but can be fully customizable.
 
+Full Documentation can be found in the [Wiki](https://github.com/HBSTech/GenericEcommerce/wiki)
+
 # Basic Setup
 
 ## Startup.cs
