@@ -5,6 +5,10 @@ Full Documentation can be found in the [Wiki](https://github.com/HBSTech/Generic
 
 # Basic Setup
 
+Install the [HBS.Kentico.Ecommerce](https://www.nuget.org/packages/HBS.Kentico.Ecommerce/) package onto your MVC Site.
+
+Install either [StripeJS payment gateway](https://www.nuget.org/packages/HBS.Kentico.Ecommerce.StripeJSPaymentGateway/) Or [Create your own payment gateway](https://github.com/HBSTech/GenericEcommerce/wiki/Creating-Custom-Payment-Gateways).
+
 ## Startup.cs
 Add to your services
 
