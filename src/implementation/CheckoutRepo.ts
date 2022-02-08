@@ -339,6 +339,6 @@ export class CheckoutRepo {
     }
 
     redirectToThankYouUrl(url: string): void {
-        window.location.href = url; // + (this.orderGUID ? (url.includes("?") ? "&" : "?") + "orderGUID=" + this.orderGUID : "");
+        window.location.href = url + (this.orderGUID ? (url.includes("?") ? "&" : "?") + "o=" + this.orderGUID : "");
     }
 }

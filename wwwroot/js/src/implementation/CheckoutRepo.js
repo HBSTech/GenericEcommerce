@@ -331,6 +331,6 @@ export class CheckoutRepo {
         });
     }
     redirectToThankYouUrl(url) {
-        window.location.href = url; // + (this.orderGUID ? (url.includes("?") ? "&" : "?") + "orderGUID=" + this.orderGUID : "");
+        window.location.href = url + (this.orderGUID ? (url.includes("?") ? "&" : "?") + "o=" + this.orderGUID : "");
     }
 }
