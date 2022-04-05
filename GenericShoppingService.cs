@@ -208,6 +208,7 @@ namespace Generic.Ecom
             ShoppingCartItemInfo shoppingCartItemInfo = new ShoppingCartItemInfo();
             shoppingCartItemInfo.SKUID = itemParams.SKUID;
             shoppingCartItemInfo.CartItemUnits = itemParams.Quantity;
+            shoppingCartItemInfo.CartItemText = itemParams.Text;
             shoppingCartItemInfo.ShoppingCart = cart;
             foreach(var itemKey in itemParams.CustomParameters.Keys)
             {
