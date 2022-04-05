@@ -4,6 +4,47 @@ const checkout = InitializeEcommerceService("Checkout");
 const shoppingCart = InitializeEcommerceService("ShoppingCart");
 const ecommerceClass = InitializeEcommerceService("EcommerceClass");
 
+const ecommerceCustomClass = (function () {
+    function customClass() {
+        var self = this;
+        this.createBillingAddressObject = function () {
+            var address = document.body.querySelector("#billingAddress.form-control");
+            var address2 = document.body.querySelector("#billingAddress2.form-control");
+            var city = document.body.querySelector("#billingCity.form-control");
+            var country = document.body.querySelector("#billingCountry");
+            var state = document.body.querySelector("#billingState");
+            var zip = document.body.querySelector("#billingZip.form-control");
+            if ((address?.value ?? "") != "" && (country?.value ?? "") != "" && (city?.value ?? "") != "" && (zip?.value ?? "") != "" && (country?.value == "USA" ? (state?.value ?? "") != "" : true)) {
+                var billingAddressObject = { addressLine1: address.value, addressLine2: address2?.value, addressCity: city.value, addressCountryID: country.value, addressStateID: state.value, addressPostalCode: zip.value };
+                var addressID = document.body.querySelector("select#billingAddresses");
+                if (addressID && addressID.value != "") {
+                    billingAddressObject.addressID = addressID.value;
+                }
+                return billingAddressObject;
+            }
+            return null;
+        }
+
+        this.setBillingAddress = function (event) {
+            ecommerceClass.bootstrapValidate(".customer");
+            var addressObject = self.createBillingAddressObject();
+            if (addressObject != null) {
+                document.body.dispatchEvent(checkout.setBillingAddressEvent(addressObject));
+                ecommerceClass.bootstrapValidate(".billing-address");
+            }
+        }
+        this.clearShippingAddress = function (event) {
+            ecommerceClass.bootstrapValidate(".customer");
+            var addressObject = self.createBillingAddressObject();
+            if (addressObject != null) {
+                document.body.dispatchEvent(checkout.setShippingAddressEvent(addressObject));
+                ecommerceClass.bootstrapValidate(".billing-address");
+            }
+        }
+    }
+    return new customClass();
+})();
+
 /* Event dispatch */
 document.body.addEventListener("click", function (ev) {
     if (ev.target.classList.contains("add-to-cart")) {
@@ -64,6 +105,11 @@ document.body.addEventListener("change", function (ev) {
     }
     if (ev.target.classList.contains("shipping-address-select")) {
         document.body.dispatchEvent(checkout.getAddressEvent(ev.target.value, 2));
+    }
+    if (ev.target.id == "differentAddress") {
+        if (ev.target.checked == false) {
+            ecommerceCustomClass.clearShippingAddress(event);
+        }
     }
     if (ev.target.classList.contains("order-note")) {
         document.body.dispatchEvent(checkout.setOrderNoteEvent(ev.target.value));
@@ -346,22 +392,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     var billingAddress = document.body.querySelector(".billing-address");
     if (billingAddress) {
         billingAddress.addEventListener("change", (event) => {
-            ecommerceClass.bootstrapValidate(".customer");
-            var address = document.body.querySelector("#billingAddress.form-control");
-            var address2 = document.body.querySelector("#billingAddress2.form-control");
-            var city = document.body.querySelector("#billingCity.form-control");
-            var country = document.body.querySelector("#billingCountry");
-            var state = document.body.querySelector("#billingState");
-            var zip = document.body.querySelector("#billingZip.form-control");
-            if ((address?.value ?? "") != "" && (country?.value ?? "") != "" && (city?.value ?? "") != "" && (zip?.value ?? "") != "" && (country?.value == "USA" ? (state?.value ?? "") != "" : true )) {
-                var billingAddressObject = { addressLine1: address.value, addressLine2: address2?.value, addressCity: city.value, addressCountryID: country.value, addressStateID: state.value, addressPostalCode: zip.value };
-                var addressID = document.body.querySelector("select#billingAddresses");
-                if (addressID && addressID.value != "") {
-                    billingAddressObject.addressID = addressID.value;
-                }
-                document.body.dispatchEvent(checkout.setBillingAddressEvent(billingAddressObject));
-                ecommerceClass.bootstrapValidate(".billing-address");
-            }
+            ecommerceCustomClass.setBillingAddress(event);
         });
     }
 
