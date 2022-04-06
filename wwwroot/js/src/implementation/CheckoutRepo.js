@@ -64,7 +64,7 @@ export class CheckoutRepo {
             }).then((html) => {
                 return html;
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
                 return null;
             });
         });
@@ -76,7 +76,7 @@ export class CheckoutRepo {
             }).then((options) => {
                 EcommerceClassRepo.applyDropdownList(selectId, options);
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -89,7 +89,7 @@ export class CheckoutRepo {
                 .then((options) => {
                 return options;
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
                 return null;
             });
         });
@@ -104,7 +104,7 @@ export class CheckoutRepo {
                 EcommerceClassRepo.applyDropdownList(selectId, options);
             })
                 .catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -119,7 +119,7 @@ export class CheckoutRepo {
             }).then((options) => {
                 EcommerceClassRepo.applyDropdownList(selectId, options);
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -130,7 +130,7 @@ export class CheckoutRepo {
             }).then((html) => {
                 return html;
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
                 return null;
             });
         });
@@ -152,7 +152,7 @@ export class CheckoutRepo {
                     document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(order.message));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -165,12 +165,12 @@ export class CheckoutRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
                 this.customerCreated = true;
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
                 this.customerCreated = false;
             });
         });
@@ -188,11 +188,11 @@ export class CheckoutRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -209,11 +209,11 @@ export class CheckoutRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -226,11 +226,11 @@ export class CheckoutRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -243,11 +243,11 @@ export class CheckoutRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -260,11 +260,11 @@ export class CheckoutRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -277,11 +277,11 @@ export class CheckoutRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -293,7 +293,7 @@ export class CheckoutRepo {
                 EcommerceClassRepo.applyDropdownList(billingID, options);
                 EcommerceClassRepo.applyDropdownList(shippingID, options);
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -308,7 +308,7 @@ export class CheckoutRepo {
             }).then((address) => {
                 return address;
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
                 return null;
             });
         });

@@ -11,6 +11,7 @@ using Generic.Ecom.RepositoryLibrary;
 using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Generic.Ecom.Components;
+using Generic.Ecom.Resources;
 
 [assembly: RegisterPageTemplate("Generic.Ecom.ShoppingCart", "Shopping Cart Page Template", customViewName: "~/EcommerceAreas/Shared/PageTemplates/ShoppingCart.cshtml")]
 
@@ -38,7 +39,7 @@ namespace Generic.Ecom.Controllers
         public async Task<IActionResult> Add([FromBody] AddToCartViewModel cartItem, [FromServices] IStringLocalizer<SharedResources> localizer)
         {
             _ = await CartService.AddToCart(cartItem);
-            return new JsonResult(new { Message = localizer["Item added successfully."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Item added successfully."] ) });
         }
 
 
@@ -52,7 +53,7 @@ namespace Generic.Ecom.Controllers
 
                 return new JsonResult(new { Price });
             }
-            return new JsonResult(new { Message = localizer["Cart item update failed.  Please refresh page."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Cart item update failed.  Please refresh page."], AlertType.Error) });
         }
 
 
@@ -72,7 +73,7 @@ namespace Generic.Ecom.Controllers
                     return new JsonResult(new { Remove = true });
                 }
             }
-            return new JsonResult(new { Message = localizer["Cart item deletion failed.  Please refresh page."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Cart item deletion failed.  Please refresh page."], AlertType.Error) });
         }
 
         //Finish
@@ -88,7 +89,7 @@ namespace Generic.Ecom.Controllers
         {
             var cart = CartRepository.GetCartViewModel(false);
 
-            return View(EcommerceOptions.CartTotalsPartialView, cart);
+            return PartialView(EcommerceOptions.CartTotalsPartialView, cart);
         }
 
 
@@ -98,7 +99,7 @@ namespace Generic.Ecom.Controllers
         {
             var cart = CartRepository.GetCartViewModel(false);
 
-            return View(EcommerceOptions.CartTillFreeShippingPartialView, cart);
+            return PartialView(EcommerceOptions.CartTillFreeShippingPartialView, cart);
         }
 
 

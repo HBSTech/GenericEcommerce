@@ -62,17 +62,19 @@ namespace Generic.Ecom.RepositoryLibrary
         {
             var states = await ProgressiveCache.LoadAsync(async (cs) =>
             {
-                var options = await StateInfoProvider.Get()
+                var options = (await StateInfoProvider.Get()
                 .WhereEquals(nameof(StateInfo.CountryID), countryID)
-                .GetEnumerableTypedResultAsync();
+                .GetEnumerableTypedResultAsync());
                 if (cs.Cached)
                 {
                     cs.CacheDependency = CacheHelper.GetCacheDependency(options.Select(x => $"{StateInfo.OBJECT_TYPE}|byid|{x.StateID}").ToArray());
                 }
-                return options;
+                var finalOptions = options.Select(x => new SelectListItem(x.StateDisplayName, x.StateID.ToString())).ToList();
+                finalOptions.Insert(0, new SelectListItem("(Select State)", ""));
+                return finalOptions;
             }, new CacheSettings(EcommerceServiceOptions.CacheMinutes(), nameof(GetStates), countryID));
 
-            return states.Select(x => new SelectListItem(x.StateDisplayName, x.StateID.ToString()));
+            return states;
         }
 
         public async Task<IEnumerable<SelectListItem>> GetAddresses()

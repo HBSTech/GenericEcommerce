@@ -1,8 +1,9 @@
 import { ListItem } from "./ListItem";
+import { Alert } from "./Alert";
 export declare class EcommerceClassRepo {
     static tokenInput(): string;
     static showAlert(alert: string): void;
-    static showAlertEvent(message: string): CustomEvent;
+    static showAlertEvent(alert: Alert): CustomEvent;
     static getJSON(dict: any): string;
     static getPostHeaders(name?: string): {
         [key: string]: string;

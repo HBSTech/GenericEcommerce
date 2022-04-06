@@ -1,6 +1,7 @@
 ﻿"use strict"
 
 import { ListItem } from "./ListItem";
+import { Alert } from "./Alert"
 
 export class EcommerceClassRepo {
     static tokenInput(): string {
@@ -11,8 +12,8 @@ export class EcommerceClassRepo {
         console.log(alert);
     }
 
-    static showAlertEvent(message: string): CustomEvent {
-        return new CustomEvent("show-alert", { detail: message });
+    static showAlertEvent(alert: Alert): CustomEvent {
+        return new CustomEvent("show-alert", { detail: alert });
     }
 
     static getJSON(dict: any): string {
@@ -57,8 +58,8 @@ export class EcommerceClassRepo {
             var header = response.headers.get("content-type");
             if (header !== null && header.indexOf("application/json") !== -1) {
                 var json = await response.json();
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             } else {
                 var html = await response.text();

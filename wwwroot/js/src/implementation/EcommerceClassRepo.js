@@ -15,8 +15,8 @@ export class EcommerceClassRepo {
     static showAlert(alert) {
         console.log(alert);
     }
-    static showAlertEvent(message) {
-        return new CustomEvent("show-alert", { detail: message });
+    static showAlertEvent(alert) {
+        return new CustomEvent("show-alert", { detail: alert });
     }
     static getJSON(dict) {
         return JSON.stringify(dict);
@@ -57,8 +57,8 @@ export class EcommerceClassRepo {
                 var header = response.headers.get("content-type");
                 if (header !== null && header.indexOf("application/json") !== -1) {
                     var json = yield response.json();
-                    if (json.message) {
-                        document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                    if (json.alert) {
+                        document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                     }
                 }
                 else {

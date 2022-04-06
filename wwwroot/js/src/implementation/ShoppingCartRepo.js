@@ -23,7 +23,7 @@ export class ShoppingCartRepo {
                 var item = EcommerceClassRepo.decodeHTML(html) || "";
                 totals === null || totals === void 0 ? void 0 : totals.replaceWith(item);
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
             EcommerceClassRepo.ajax("/ShoppingCart/GetTotalTillFreeShipping").then((response) => {
                 return response.text();
@@ -31,7 +31,7 @@ export class ShoppingCartRepo {
                 var item = EcommerceClassRepo.decodeHTML(html) || "";
                 totalToFreeShipping === null || totalToFreeShipping === void 0 ? void 0 : totalToFreeShipping.replaceWith(item);
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -44,15 +44,15 @@ export class ShoppingCartRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (!json.message && event.detail.priceEl != null) {
+                if (!json.alert && event.detail.priceEl != null) {
                     console.log(event.detail);
                     event.detail.priceEl.innerHTML = json.price;
                 }
                 else {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }
@@ -65,12 +65,12 @@ export class ShoppingCartRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
                 return json.html;
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }

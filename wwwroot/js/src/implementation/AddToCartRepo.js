@@ -22,12 +22,12 @@ export class AddToCartRepo {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                if (json.message) {
-                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.message));
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
                 }
                 document.body.dispatchEvent(this.addedToCart);
             }).catch((error) => {
-                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.message));
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
             });
         });
     }

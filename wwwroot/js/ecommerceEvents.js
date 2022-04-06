@@ -220,7 +220,9 @@ document.body.addEventListener("set-shipping-address", function (ev) {
 });
 
 document.body.addEventListener("set-billing-address", function (ev) {
-    checkout.setBillingAddress(ev.detail);
+    checkout.setBillingAddress(ev.detail).then(() => {
+        document.body.dispatchEvent(checkout.updateOrderEvent);
+    });
 });
 
 document.body.addEventListener("set-shipping-option", function (ev) {

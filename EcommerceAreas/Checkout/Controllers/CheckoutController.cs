@@ -3,6 +3,7 @@ using Generic.Ecom.Components;
 using Generic.Ecom.EcommerceAreas.Checkout.Controllers;
 using Generic.Ecom.Models;
 using Generic.Ecom.RepositoryLibrary;
+using Generic.Ecom.Resources;
 using Generic.Ecom.ServiceLibrary;
 using Kentico.PageBuilder.Web.Mvc.PageTemplates;
 using Microsoft.AspNetCore.Mvc;
@@ -109,7 +110,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
 
             _ = await CheckoutService.SetBillingAddress(model.AddressID, model);
 
-            return new JsonResult(new { Message = localizer["Billing address saved."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Billing address saved."])});
         }
 
         [HttpPost]
@@ -124,7 +125,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
 
             _ = await CheckoutService.SetShippingAddress(model.AddressID, model);
 
-            return new JsonResult(new { Message = localizer["Shipping address saved."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Shipping address saved."]) });
         }
 
         [HttpPost]
@@ -139,7 +140,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
 
             await CheckoutService.SetCustomer(model, User.Identity.IsAuthenticated);
 
-            return new JsonResult(new { Message = localizer["Customer saved."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Customer saved."]) });
         }
 
         [HttpPost]
@@ -147,7 +148,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
         public async Task<IActionResult> SetShippingOption([FromBody] int optionID, [FromServices] IStringLocalizer<SharedResources> localizer)
         {
             CheckoutService.SetShippingOption(optionID);
-            return new JsonResult(new { Message = localizer["Shipping option selected."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Shipping option selected."]) });
         }
 
         [HttpPost]
@@ -155,7 +156,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
         public async Task<IActionResult> SetPaymentOption([FromBody] int optionID, [FromServices] IStringLocalizer<SharedResources> localizer)
         {
             CheckoutService.SetPaymentOption(optionID);
-            return new JsonResult(new { Message = localizer["Payment option selected."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Payment option selected."]) });
         }
 
         [HttpPost]
@@ -164,11 +165,11 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
         {
             if (CheckoutService.AddCouponCode(coupon))
             {
-                return new JsonResult(new { Message = localizer["Coupon added successfully."] });
+                return new JsonResult(new { Alert = new Alert(localizer["Coupon added successfully."]) });
             }
             else
             {
-                return new JsonResult(new { Message = localizer["Coupon invalid."] });
+                return new JsonResult(new { Alert = new Alert(localizer["Coupon invalid."], AlertType.Error) });
             }
         }
 
@@ -178,7 +179,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
         {
             var cart = CartRepository.GetCart();
             cart.RemoveCouponCode(coupon);
-            return new JsonResult(new { Message = localizer["Coupon removed successfully."] });
+            return new JsonResult(new { Alert = new Alert(localizer["Coupon removed successfully."]) });
         }
 
         [HttpPost]
@@ -192,7 +193,7 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
             } 
             else
             {
-                return new JsonResult(new { Message = "Create Order Failed", OrderFailed = true });
+                return new JsonResult(new { Alert = new Alert("Create Order Failed", AlertType.Error), OrderFailed = true });
             }
         }
 
