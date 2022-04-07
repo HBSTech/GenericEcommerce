@@ -29,6 +29,8 @@ namespace Generic.Ecom.Models
 
         public int CartItemUnits { get; set; }
 
+        public string CartItemText { get; set; }
+
         public decimal TotalPrice { get; set; }
 
         public string FormattedPrice { get { return FormatPrice(TotalPrice); } }
@@ -40,6 +42,7 @@ namespace Generic.Ecom.Models
 
         public CartItemViewModel(ShoppingCartItemInfo shoppingCartItem, string currencyFormatString)
         {
+            CartItemText = shoppingCartItem.CartItemText;
             CartItemID = shoppingCartItem.CartItemID;
             CartItemUnits = shoppingCartItem.CartItemUnits;
             SKUID = shoppingCartItem.SKUID;

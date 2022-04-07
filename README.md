@@ -46,7 +46,7 @@ Add to the bottom
 You can add the "Add to Cart" through the below View Component:
 
 ``` csharp
-@*This is an example that will add a sku with a custom field of a color to the cart.  In order to just use as normal, remove the CustomerFields property from the AddToCartViewModel.*@ 
+@*This is an example that will add a sku with a custom field of a color to the cart.  In order to just use as normal, remove the CustomFields property from the AddToCartViewModel.*@ 
 
 @await Component.InvokeAsync("Generic.Ecom.AddToCart", new AddToCartViewModel() { Quantity = 1, SKUGUID = Model.Page.SKUProduct.SKUGUID, CustomFields = new Dictionary<string, object>() { { "color", "red" } } } )
 ```
