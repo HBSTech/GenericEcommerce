@@ -115,6 +115,21 @@ namespace Generic.Ecom.EcommerceAreas.Checkout.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetOrderBillingAddress([FromBody] OrderAddressViewModel model, [FromServices] IStringLocalizer<SharedResources> localizer)
+        {
+            if (!ModelState.IsValid)
+            {
+                var Errors = ModelState.Select(x => new { Name = x.Key, Errors = x.Value.Errors.Select(x => x.ErrorMessage) });
+                return new JsonResult(new { Errors });
+            }
+
+            _ = await CheckoutService.SetOrderBillingAddress(model.OrderGuid, model.Address.AddressID, model.Address);
+
+            return new JsonResult(new { Alert = new Alert(localizer["Billing address saved."]) });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetShippingAddress([FromBody] AddressViewModel model, [FromServices] IStringLocalizer<SharedResources> localizer)
         {
             if (!ModelState.IsValid)

@@ -3,6 +3,7 @@ using CMS.Globalization;
 using Generic.Ecom.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace Generic.Ecom.RepositoryLibrary
         Task<AddressViewModel> GetBillingAddress();
         Task<IEnumerable<SelectListItem>> GetCountries();
         Task<CustomerViewModel> GetCustomer();
+        Task<OrderInfo> GetOrder(Guid orderGuid);
         Task<IEnumerable<SelectListItem>> GetPaymentOptions();
         Task<AddressViewModel> GetShippingAddress();
         Task<IEnumerable<SelectListItem>> GetShippingOptions();

@@ -68,5 +68,14 @@ namespace Generic.Ecom.Models
             address.AddressCountryID = AddressCountryID;
             address.AddressStateID = AddressStateID;
         }
+        public void ApplyTo(OrderAddressInfo address)
+        {
+            address.AddressLine1 = AddressLine1;
+            address.AddressLine2 = AddressLine2;
+            address.AddressCity = AddressCity;
+            address.AddressZip = AddressPostalCode;
+            address.AddressCountryID = AddressCountryID;
+            address.AddressStateID = AddressStateID;
+        }
     }
 }

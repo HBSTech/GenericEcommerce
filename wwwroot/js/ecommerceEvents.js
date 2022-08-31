@@ -221,7 +221,9 @@ document.body.addEventListener("set-shipping-address", function (ev) {
 
 document.body.addEventListener("set-billing-address", function (ev) {
     checkout.setBillingAddress(ev.detail).then(() => {
-        document.body.dispatchEvent(checkout.updateOrderEvent);
+        if (!checkout.orderGUID) {
+            document.body.dispatchEvent(checkout.updateOrderEvent);
+        }
     });
 });
 
@@ -293,6 +295,10 @@ document.body.addEventListener("create-order", function (ev) {
 
 document.body.addEventListener("payment", function (ev) {
     if (checkout.orderGUID != "" && checkout.payment) {
+        var itemsToDisable = ".checkout-container .customer input";
+        itemsToDisable += ",.checkout-container .shipping-address input, .checkout-container .shipping-address select"
+        itemsToDisable += ", .checkout-container textarea, input.coupon-code"
+        document.querySelectorAll(itemsToDisable).forEach(function (item) { item.disabled = true; });
         checkout.payment(ev);
     }
 });

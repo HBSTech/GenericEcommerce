@@ -63,21 +63,17 @@ export class CheckoutRepo {
         return new CustomEvent("set-customer", { detail: result });
     }
 
-
     setBillingAddressEvent(result: Address): CustomEvent<Address> {
         return new CustomEvent("set-billing-address", { detail: result });
     }
-
 
     setShippingAddressEvent(result: Address): CustomEvent<Address> {
         return new CustomEvent("set-shipping-address", { detail: result });
     }
 
-
     setShippingOptionEvent(result: number): CustomEvent<number> {
         return new CustomEvent("set-shipping-option", { detail: result });
     }
-
 
     setPaymentOptionEvent(result: number): CustomEvent<number> {
         return new CustomEvent("set-payment-option", { detail: result });
@@ -197,9 +193,33 @@ export class CheckoutRepo {
             setTimeout(() => { this.setBillingAddress(address) }, 500);
             return;
         }
+        if (this.orderGUID && this.orderGUID != "") {
+            return this.setOrderBillingAddress(address);
+        } else {
+            return this.setCartBillingAddress(address);
+        }
+    }
+
+    async setCartBillingAddress(address: Address): Promise<void> {
         return EcommerceClassRepo.ajax("/Checkout/SetBillingAddress", {
             method: "POST",
             body: EcommerceClassRepo.getJSON(address),
+            headers: EcommerceClassRepo.getPostHeaders()
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
+            if (json.alert) {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
+            }
+        }).catch((error) => {
+            document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
+        });
+    }
+
+    async setOrderBillingAddress(address: Address): Promise<void> {
+        return EcommerceClassRepo.ajax("/Checkout/SetOrderBillingAddress", {
+            method: "POST",
+            body: EcommerceClassRepo.getJSON({ orderGuid: this.orderGUID, address }),
             headers: EcommerceClassRepo.getPostHeaders()
         }).then((response) => {
             return response.json();
@@ -339,6 +359,6 @@ export class CheckoutRepo {
     }
 
     redirectToThankYouUrl(url: string): void {
-        window.location.href = url + (this.orderGUID ? (url.includes("?") ? "&" : "?") + "o=" + this.orderGUID : "");
+        window.location.href = url + ((this.orderGUID && this.orderGUID != "") ? (url.includes("?") ? "&" : "?") + "o=" + this.orderGUID : "");
     }
 }

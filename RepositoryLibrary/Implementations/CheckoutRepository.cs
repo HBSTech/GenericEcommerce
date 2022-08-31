@@ -22,10 +22,11 @@ namespace Generic.Ecom.RepositoryLibrary
         public ICartRepository CartRepository { get; }
         public IEcommerceServiceOptions EcommerceServiceOptions { get; }
         public IProgressiveCache ProgressiveCache { get; }
+        public IOrderInfoProvider OrderInfoProvider { get; }
         public IShoppingService ShoppingService { get; }
         public IAddressInfoProvider AddressInfoProvider { get; }
 
-        public CheckoutRepository(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, IShippingOptionInfoProvider shippingOptionInfoProvider, IPaymentOptionInfoProvider paymentOptionInfoProvider, ICartRepository cartRepository, IEcommerceServiceOptions ecommerceServiceOptions, IProgressiveCache progressiveCache)
+        public CheckoutRepository(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, IShippingOptionInfoProvider shippingOptionInfoProvider, IPaymentOptionInfoProvider paymentOptionInfoProvider, ICartRepository cartRepository, IEcommerceServiceOptions ecommerceServiceOptions, IProgressiveCache progressiveCache, IOrderInfoProvider orderInfoProvider)
         {
             CountryInfoProvider = countryInfoProvider;
             StateInfoProvider = stateInfoProvider;
@@ -34,8 +35,13 @@ namespace Generic.Ecom.RepositoryLibrary
             CartRepository = cartRepository;
             EcommerceServiceOptions = ecommerceServiceOptions;
             ProgressiveCache = progressiveCache;
+            OrderInfoProvider = orderInfoProvider;
             ShoppingService = shoppingService;
             AddressInfoProvider = addressInfoProvider;
+        }
+        public async Task<OrderInfo> GetOrder(Guid orderGuid)
+        {
+            return (await OrderInfoProvider.Get().Where(nameof(OrderInfo.OrderGUID), CMS.DataEngine.QueryOperator.Equals, orderGuid).GetEnumerableTypedResultAsync()).FirstOrDefault();
         }
 
         public CheckoutViewModel PrepareCheckout()

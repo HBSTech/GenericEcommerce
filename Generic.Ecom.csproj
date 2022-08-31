@@ -8,17 +8,19 @@
     <Authors>Heartland Business Systems | jhess@hbs.net</Authors>
     <Company>Heartland Business Systems</Company>
     <PackageId>HBS.Kentico.Ecommerce</PackageId>
-    <Version>13.5.4</Version>
+    <Version>13.5.5</Version>
     <Product>HBS.Kentico.Ecommerce</Product>
     <PackageProjectUrl>https://github.com/HBSTech/GenericEcommerce</PackageProjectUrl>
-    <AssemblyVersion>13.5.4</AssemblyVersion>
-    <FileVersion>13.5.4</FileVersion>
+    <AssemblyVersion>13.5.5</AssemblyVersion>
+    <FileVersion>13.5.5</FileVersion>
     <RepositoryUrl>https://github.com/HBSTech/GenericEcommerce</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
     <PackageIcon>hbs-icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>Ecommerce,Kentico,xperience,hbs,heartland,business,systems</PackageTags>
     <PackageReleaseNotes>
+      13.5.5:
+      Allowing the billing address to be updated after first payment try. 
       13.5.4:
       Added CartItemText to the cart item model
       13.5.3:

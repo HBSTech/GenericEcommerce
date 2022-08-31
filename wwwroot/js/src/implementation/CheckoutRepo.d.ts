@@ -34,6 +34,8 @@ export declare class CheckoutRepo {
     createOrder(): Promise<void>;
     setCustomer(customer: Customer): Promise<void>;
     setBillingAddress(address: Address): Promise<void>;
+    setCartBillingAddress(address: Address): Promise<void>;
+    setOrderBillingAddress(address: Address): Promise<void>;
     setShippingAddress(address: Address): Promise<void>;
     setShippingOption(id: number): Promise<void>;
     setPaymentOption(id: number): Promise<void>;

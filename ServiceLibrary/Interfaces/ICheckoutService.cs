@@ -11,6 +11,7 @@ namespace Generic.Ecom.ServiceLibrary
         Guid CreateOrder();
         Task<AddressInfo> SetBillingAddress(int? addressID, AddressViewModel address);
         Task<CustomerInfo> SetCustomer(CustomerViewModel customer, bool userAuthenticated);
+        Task<AddressInfo> SetOrderBillingAddress(Guid OrderGuid, int? addressID, AddressViewModel address);
         void SetOrderNote(string note);
         void SetPaymentOption(int paymentOptionID);
         Task<AddressInfo> SetShippingAddress(int? addressID, AddressViewModel address);

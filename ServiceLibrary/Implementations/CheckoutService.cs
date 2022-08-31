@@ -1,4 +1,5 @@
-﻿using CMS.Ecommerce;
+﻿using CMS.Core;
+using CMS.Ecommerce;
 using CMS.Globalization;
 using Generic.Ecom.Models;
 using Generic.Ecom.RepositoryLibrary;
@@ -20,8 +21,10 @@ namespace Generic.Ecom.ServiceLibrary
         public IStateInfoProvider StateInfoProvider { get; }
         public ICustomerInfoProvider CustomerInfoProvider { get; }
         public IShoppingCartInfoProvider ShoppingCartInfoProvider { get; }
+        public ICheckoutRepository CheckoutRepository { get; }
+        public IAddressConverter AddressConverter { get; }
 
-        public CheckoutService(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICartRepository cartRepository, ISKUInfoProvider sKUInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, ICustomerInfoProvider customerInfoProvider, IShoppingCartInfoProvider shoppingCartInfoProvider)
+        public CheckoutService(IShoppingService shoppingService, IAddressInfoProvider addressInfoProvider, ICartRepository cartRepository, ISKUInfoProvider sKUInfoProvider, ICountryInfoProvider countryInfoProvider, IStateInfoProvider stateInfoProvider, ICustomerInfoProvider customerInfoProvider, IShoppingCartInfoProvider shoppingCartInfoProvider, ICheckoutRepository checkoutRepository, IAddressConverter addressConverter)
         {
             ShoppingService = shoppingService;
             AddressInfoProvider = addressInfoProvider;
@@ -31,6 +34,8 @@ namespace Generic.Ecom.ServiceLibrary
             StateInfoProvider = stateInfoProvider;
             CustomerInfoProvider = customerInfoProvider;
             ShoppingCartInfoProvider = shoppingCartInfoProvider;
+            CheckoutRepository = checkoutRepository;
+            AddressConverter = addressConverter;
         }
 
         public async Task<AddressInfo> SetBillingAddress(int? addressID, AddressViewModel address)
@@ -54,6 +59,37 @@ namespace Generic.Ecom.ServiceLibrary
             addressInfo = addressInfo != null? addressInfo : addressID != null ? AddressInfoProvider.Get(addressID ?? 0) : AddressInfo.New();
             address.ApplyTo(addressInfo);
             ShoppingService.SetBillingAddress(addressInfo);
+            return addressInfo;
+        }
+
+        public async Task<AddressInfo> SetOrderBillingAddress(Guid OrderGuid, int? addressID, AddressViewModel address)
+        {
+            AddressInfo addressInfo = null;
+
+            var customer = ShoppingService.GetCurrentCustomer();
+            if (customer != null && addressID == null)
+            {
+                addressInfo = (await AddressInfoProvider.GetByCustomer(customer.CustomerID)
+                    .WhereEquals(nameof(AddressInfo.AddressLine1), address.AddressLine1)
+                    .WhereEqualsOrNull(nameof(AddressInfo.AddressLine2), address.AddressLine2)
+                    .WhereEquals(nameof(AddressInfo.AddressCity), address.AddressCity)
+                    .WhereEquals(nameof(AddressInfo.AddressStateID), address.AddressStateID)
+                    .WhereEquals(nameof(AddressInfo.AddressCountryID), address.AddressCountryID)
+                    .WhereEquals(nameof(AddressInfo.AddressZip), address.AddressPostalCode)
+                    .GetEnumerableTypedResultAsync())
+                    .FirstOrDefault();
+            }
+
+            addressInfo = addressInfo != null ? addressInfo : addressID != null ? AddressInfoProvider.Get(addressID ?? 0) : null;
+            if(addressInfo != null)
+            {
+                var order = await CheckoutRepository.GetOrder(OrderGuid);
+                if(order != null)
+                {
+                    address.ApplyTo(order.OrderBillingAddress);
+                    Service.Resolve<IOrderAddressInfoProvider>().Set(order.OrderBillingAddress);
+                }
+            }
             return addressInfo;
         }
 

@@ -181,9 +181,36 @@ export class CheckoutRepo {
                 setTimeout(() => { this.setBillingAddress(address); }, 500);
                 return;
             }
+            if (this.orderGUID != null) {
+                return this.setOrderBillingAddress(address);
+            }
+            else {
+                return this.setCartBillingAddress(address);
+            }
+        });
+    }
+    setCartBillingAddress(address) {
+        return __awaiter(this, void 0, void 0, function* () {
             return EcommerceClassRepo.ajax("/Checkout/SetBillingAddress", {
                 method: "POST",
                 body: EcommerceClassRepo.getJSON(address),
+                headers: EcommerceClassRepo.getPostHeaders()
+            }).then((response) => {
+                return response.json();
+            }).then((json) => {
+                if (json.alert) {
+                    document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(json.alert));
+                }
+            }).catch((error) => {
+                document.body.dispatchEvent(EcommerceClassRepo.showAlertEvent(error.alert));
+            });
+        });
+    }
+    setOrderBillingAddress(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return EcommerceClassRepo.ajax("/Checkout/SetOrderBillingAddress", {
+                method: "POST",
+                body: EcommerceClassRepo.getJSON({ orderGuid: this.orderGUID, address }),
                 headers: EcommerceClassRepo.getPostHeaders()
             }).then((response) => {
                 return response.json();
